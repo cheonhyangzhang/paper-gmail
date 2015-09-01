@@ -60,6 +60,9 @@ app.draftTo = "";
 app.draftSubject = "";
 app.draftBody = "";
 
+
+app.replyBody = "";
+
 var gmail = null;
 var PROFILE_IMAGE_SIZE = 30;
 var labels_search = {
@@ -70,7 +73,17 @@ var labels_search = {
 	'DRAFTS':'label:drafts !is:chats',
 	'SENT':'label:sent !is:chats'
 }
-
+app._abstractEmailsFromTo = function(to){
+	var tos_list = to.split(',')
+	for (var i = 0; i < tos_list.length; i ++){
+		tos_list[i] = tos_list[i].replace(/(.*)</g,"").replace(/>(.*)/g,"").trim();
+	}
+	return tos_list;
+}
+app._abstractEmailsFromToToString = function(to){
+	tos_list = app._abstractEmailsFromTo(to);
+	return tos_list.join(", ");
+}
 app._isUserLable = function(label){
 	if (label.type == 'user'){
 		return true;
@@ -119,11 +132,56 @@ app.deleteDraft = function(e){
 	app.draftSubject = "";
 	app.draftBody = "";
 }
+app.replyEmail = function(e){
+	console.log("replyEmil");
+	console.log(app.replyToList);
+	console.log(app.user.name);
+	console.log(app.user.email);
+	console.log(app.replyBody);
+	if (typeof(app.replyToList) == 'undefined' || app.replyToList.length == 0){
+		document.querySelector('#emailNotSent').show();
+		return;
+	}
+	var mail = {  
+	    // "to": "email1@example.com, email2@example.com",
+	    "to": app.replyToList.join(","),
+	    "subject":app.email_subject,
+	    "fromName": app.user.name,
+	    "from": app.user.email,
+	    "body": app.replyBody
+	    // "cids": [],
+    	// "attaches" : []
+	}
+
+	var raw_email = createMimeMessage(mail);
+	var encoded_raw_email = Base64.encode(raw_email)
+	console.log(raw_email);
+	console.log(encoded_raw_email);
+	var replaced = encodeURL(encoded_raw_email);
+  	var request = gapi.client.gmail.users.messages.send({
+    	'userId': 'me',
+    	'threadId': app.selectedThread.id,
+      	'raw': replaced
+  	});
+  	request.execute(function(resp){
+  		console.log("Send email resp:");
+  		console.log(resp);
+  		if (!resp.code){
+  			app.deleteDraft();	
+  			app.closeNewEmail();
+  			document.querySelector('#emailSent').show();
+
+  		}
+  		else{
+  			document.querySelector('#emailNotSent').show();
+  		}
+  	});
+}
 app.sendEmail = function(e){
-	console.log("sending email");
-	console.log(app.draftTo);
-	console.log(app.draftSubject);
-	console.log(app.draftBody);
+	// console.log("sending email");
+	// console.log(app.draftTo);
+	// console.log(app.draftSubject);
+	// console.log(app.draftBody);
 
 	if (typeof(app.draftTo) == 'undefined' || app.draftTo == ""){
 		document.querySelector('#emailNotSent').show();
@@ -313,24 +371,25 @@ app.fetchMail = function(q, checkNew) {
 		var req = gmail.threads.get({userId: 'me', 'id': thread.id});
 		batch.add(req);
 		req.then(function(resp) {
-			thread.messages = processMessage(resp).reverse();
+			// thread.messages = processMessage(resp).reverse();
+			thread.messages = processMessage(resp);
 			thread.from = {};
-			// thread.from.name = thread.messages[thread.messages.length -1 ].from.name;
-			// thread.from.email = thread.messages[thread.messages.length -1 ].from.email;
-			// thread.from.initial = thread.messages[thread.messages.length -1 ].from.initial;
-			// thread.from.initial_color = thread.messages[thread.messages.length -1 ].from.initial_color;
-			// thread.time = thread.messages[thread.messages.length -1 ].time;
-			// thread.snippet = thread.messages[thread.messages.length -1 ].snippet;
-			// thread.date = thread.messages[thread.messages.length -1 ].date;
-			// thread.subject = thread.messages[thread.messages.length -1 ].subject;
-			thread.from.name = thread.messages[0 ].from.name;
-			thread.from.email = thread.messages[0 ].from.email;
-			thread.from.initial = thread.messages[0 ].from.initial;
-			thread.from.initial_color = thread.messages[0 ].from.initial_color;
-			thread.time = thread.messages[0 ].time;
-			thread.snippet = thread.messages[0 ].snippet;
-			thread.date = thread.messages[0 ].date;
-			thread.subject = thread.messages[0 ].subject;
+			thread.from.name = thread.messages[0].from.name;
+			thread.from.email = thread.messages[0].from.email;
+			thread.from.initial = thread.messages[0].from.initial;
+			thread.from.initial_color = thread.messages[0].from.initial_color;
+			thread.time = thread.messages[thread.messages.length -1 ].time;
+			thread.snippet = thread.messages[thread.messages.length -1 ].snippet;
+			thread.date = thread.messages[thread.messages.length -1 ].date;
+			thread.subject = thread.messages[0].subject;
+			// thread.from.name = thread.messages[0 ].from.name;
+			// thread.from.email = thread.messages[0 ].from.email;
+			// thread.from.initial = thread.messages[0 ].from.initial;
+			// thread.from.initial_color = thread.messages[0 ].from.initial_color;
+			// thread.time = thread.messages[0 ].time;
+			// thread.snippet = thread.messages[0 ].snippet;
+			// thread.date = thread.messages[0 ].date;
+			// thread.subject = thread.messages[0 ].subject;
 			loadThreads(threads, checkNew);
 		});
     });
@@ -431,7 +490,8 @@ retrieveAndFillEmailBody = function (id, index){
 		console.log("messages.get");
 		console.log(resp);
 		// console.log(resp.result.payload.body);
-	    app.email_subject = getValueForHeaderField(resp.result.payload.headers, 'Subject');
+	    // app.email_subject = getValueForHeaderField(resp.result.payload.headers, 'Subject');
+	    // app.email_subject = app.selectedThread.subject;
 	    app.email_body = "";
 	    // var payload = resp.result.payload;
 	    var payloads = [];
@@ -482,6 +542,48 @@ retrieveAndFillEmailBody = function (id, index){
 	});
 }
 
+app.replyAllTo = [];
+app.replyToList = [];
+app.replyTo = "";
+app.replyToSubject = "";
+app.replyToEmail = function(){
+	app.replyToList = [app.replyTo];
+}
+app.replyAllToEmail = function(){
+	app.replyToList = app.replyAllTo;
+}
+app.populateReplyTo = function(thread){
+	console.log("populateReplyTo");
+	console.log(thread);
+	var message = thread.messages[0];
+	app.replyToSubject = thread.subject;;
+	app.replyTo = message.from.email;
+	var tos = message.to;
+	var tos_list = tos.split(',')
+	var tos_email_list = [];
+	var index = -1;
+	for (var i = 0; i < tos_list.length; i ++){
+		tos_list[i] = tos_list[i].replace(/(.*)</g,"").replace(/>(.*)/g,"").trim();
+		if (tos_list[i] == app.user.email){
+			index = i;
+		}
+	}
+	console.log("Before removal");
+
+	console.log(tos_list);
+	if (index != -1){
+		tos_list.splice(index,1);
+	}
+	console.log("After removal");
+	console.log(tos_list);
+	console.log(app.replyTo);
+	if (app.replyTo)
+	tos_list.push(app.replyTo);
+	console.log(tos_list);
+	app.replyAllTo = tos_list;
+	app.replyToList = app.replyAllTo;
+
+}
 app.viewEmail = function(event){
 	console.log("viewEmail");
 	console.log(event);
@@ -491,8 +593,14 @@ app.viewEmail = function(event){
 	// console.log(sender);
 	app.main_page = 1;
 	app.selectedThread = $.extend({},app.threads[index]);
+
+	app.populateReplyTo(app.selectedThread);
+	app.selectedThreadFromName = app.selectedThread.messages[0].from.name;
+	app.selectedThreadFromEmail = app.selectedThread.messages[0].from.email;
+
 	app.selectedThreadId = index;
 
+	console.log("app.selectedThread");
 	console.log(app.selectedThread);
 	var length = app.selectedThread.messages.length;
 
@@ -510,7 +618,7 @@ app.viewEmail = function(event){
 		retrieveAndFillEmailBody(app.selectedThread.messages[i].id, i);
 	}	
 
-
+	 app.email_subject = app.selectedThread.subject;
 }
 
 app.onSigninFailure = function(e, detail, sender) {

@@ -152,7 +152,7 @@
                                   </section>
 
                                  
-                                  <section style="width:95%;margin-left:auto;margin-right:auto;margin-top:20px;margin-bottom:20px;">
+                                  <section style="width:95%;margin-left:auto;margin-right:auto;margin-top:20px;margin-bottom:40px;">
                                     <paper-dialog style="position:fixed;top:74px;right:8px;" id="labels_list" entry-animation="scale-up-animation"
                                                         exit-animation="fade-out-animation">
                                       <paper-menu>
@@ -184,17 +184,7 @@
                                         <paper-button on-tap="showLabels">
                                           <iron-icon icon="folder"></iron-icon>
                                         </paper-button>
-                                   <!--      <paper-dropdown autoFocus="{{true}}" id="labels_list" halign="right" class="dropdown">
-                                          <paper-menu class="menu" id="label_menu" style="max-height:500px;">
-                                            <template repeat="{{label in labels}}">
-                                              <template if="{{label.type == 'user'}}">
-                                              <paper-item onclick="moveEmailTo('{{selectedThread.id}}','{{label.id}}','{{label.name}}')">
-                                                  {{label.name}} 
-                                              </paper-item>
-                                              </template>
-                                            </template>
-                                          </paper-menu>
-                                        </paper-dropdown> -->
+                        
                                       </div>
                                       <div class="separator"></div>
                                       <div style="padding:15px;">
@@ -203,24 +193,31 @@
                                       <template is="dom-repeat" items="{{selectedThread.messages}}">
                                             <div class="separator"></div>
                                             <div class="card-content layout horizontal flex">
-                                              <div class="layout vertical">
-                                                  <template is="dom-if" if="{{_hasProfileImage(users, item.from.name)}}"> 
-                                                  <iron-image class="avatar" src="{{users[item.from.name]}}"></iron-image>
-                                                </template>
-                                                <template is="dom-if" if="{{!_hasProfileImage(users, item.from.name)}}">
-                                                  <div class="avatar">
-                                                    <span style$="{{_computeProfileColor(item.from.initial_color)}}" class="letter layout horizontal center-center">{{item.from.initial}}</span>
+                                                <div class="layout vertical">
+                                                    <template is="dom-if" if="{{_hasProfileImage(users, item.from.name)}}"> 
+                                                    <iron-image class="avatar" src="{{users[item.from.name]}}"></iron-image>
+                                                  </template>
+                                                  <template is="dom-if" if="{{!_hasProfileImage(users, item.from.name)}}">
+                                                    <div class="avatar">
+                                                      <span style$="{{_computeProfileColor(item.from.initial_color)}}" class="letter layout horizontal center-center">{{item.from.initial}}</span>
+                                                    </div>
+                                                  </template>
+                                                </div>
+
+                                                <div class="layout vertical flex">
+                                                  <div class="layout horizontal ">
+                                                    <span >{{item.from.name}}</span><span style="margin-left:10px;color:#afafaf;">{{item.from.email}}</span>
+                                                    <div class="flex">
+                                                    </div>
+                                                    <div>
+                                                    <span>{{item.time}}</span> <span>{{item.date}}</span>
+                                                    </div>
                                                   </div>
-                                                </template>
-                                              </div>
-                                              <div>
-                                                <span >{{item.from.name}}</span>
-                                              </div>
-                                              <div class="flex">
-                                              </div>
-                                              <div>
-                                                <span>{{item.time}}</span> <span>{{item.date}}</span>
-                                              </div>
+                                                  <div class="layout horizontal ">
+                                                    <span style="color:#afafaf;">to</span> <span style="margin-left:10px;color:#afafaf;">{{_abstractEmailsFromToToString(item.to)}}</span> 
+                                                  </div>
+                                                </div>
+
                                             </div>
 
                                             <!-- <div id="body_holder-{{index}}"> -->
@@ -234,6 +231,32 @@
                                       <!-- <div class="card-actions"> -->
                                         <!-- <paper-button>Some action</paper-button> -->
                                       <!-- </div> -->
+                                    </paper-card>
+                                    <paper-card class="layout horizontal flex">
+                                      <div class="card-content layout horizontal flex">
+                                        <iron-image class="avatar" src="{{user.profile_image}}"></iron-image>
+                                        <div class="layout vertical flex">
+                                          <div class="layout horizontal">
+                                            <span class="flex" style="color:#a5a5a5;">Reply To</span> 
+                                            <paper-button on-tap="replyAllToEmail">Reply All</paper-button>
+                                            <paper-button on-tap="replyToEmail">Reply</paper-button>
+                                            <!-- <paper-button>Forward</paper-button> -->
+                                          </div>
+                                          <div >
+                                            <paper-tags-input placeholder="Add a recipient" tags="{{replyToList}}"></paper-tags-input>
+                                          </div>
+                                          <div class="separator"></div> 
+                                          <div style="padding-top:20px;padding-bottom:20px;withd:100%;padding-left:22px;">
+                                              <iron-autogrow-textarea style="width:100%;border:none;" bind-value="{{replyBody}}" placeholder="Say something"  id="reply-bodya" >
+                                              </iron-autogrow-textarea>
+                                          </div>
+                                          <div>
+                                            <paper-button on-tap="replyEmail" >SEND</paper-button>
+                                            <paper-button on-click="dropReply" >Drop</paper-button>
+                                          </div>
+                                        </div>
+                                      
+                                      </div>
                                     </paper-card>
                                   </section>
                                 </iron-pages>

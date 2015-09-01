@@ -20,6 +20,7 @@
     "paper-elements": "PolymerElements/paper-elements#~1.0.5",
     "iron-elements": "PolymerElements/iron-elements#~1.0.3",
     "google-signin": "GoogleWebComponents/google-signin#~1.0.3",
-    "more-routing": "PolymerLabs/more-routing#~1.0.0"
+    "more-routing": "PolymerLabs/more-routing#~1.0.0",
+    "paper-tags-input": "~1.0.3"
   }
 }
