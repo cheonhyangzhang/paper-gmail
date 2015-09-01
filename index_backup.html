@@ -1,0 +1,273 @@
+<!-- Author: Tianxiang Zhang <cenhiangapply@gmail.com> -->
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1">
+    <title>Paper Gmail</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <link rel="shortcut icon" href="images/gmail.ico">
+
+    <link rel="import" href="htmls/elements.html">
+    <link rel="import" href="htmls/route.html">
+
+    <link rel="stylesheet" href="stylesheets/app.css">
+
+  </head>
+
+  <body class="fullbleed loading">
+  <!-- <body fullbleed layout vertical > -->
+    <template is="dom-bind" id="app">
+      <more-route-selector>
+            <iron-pages selected="{{route}}" fullbleed fit >
+              <section route="login" >
+                  <div id="loginscreen" layout vertical center-center fit
+                     class="{{ {show: !isAuthenticated} | tokenList }}">
+                  <div>
+                    <img style="padding:20px;" src="images/gmail.png" width="150" ></img>
+                    <img style="padding:20px;" src="images/polymer.svg" width="150"></img>
+                  </div>
+                  <div style="padding:20px;font-size:20px;">
+                    A Material Desgin Gmail Web Application using Polymer 
+                  </div>
+                  <google-signin width="wide" height="tall"
+                      client-id="734681955886-tfnfanpm9kqt60lvjrjqj9mc6emv80qa.apps.googleusercontent.com"
+                      scopes="profile email https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.compose https://mail.google.com/"
+                      on-google-signin-success="onSigninSuccess"
+                      on-google-signin-failure="onSigninFailure"></google-signin>
+                  </div>
+              </section>
+
+              <section route="inbox" layout vertical>
+                    <!-- closeSelector="[affirmative, dismissive]" -->
+                    <paper-action-dialog transition="core-transition-center" opened="{{newEmailOpen}}" closeSelector="[affirmative]" id="newEmail" style="width:70%;height:70%;">
+                          <paper-header-panel flex fit layout vertical mode="seamed">
+                            <paper-toolbar class="medium-tall" style="background-color:white;">
+                              <paper-input-decorator class="top" flex style="color:black;" flex floatingLabel="true" label="To">
+                                    <input  is="draft-to" value="{{draftTo}}"> 
+                              </paper-input-decorator>
+
+                              <br>
+                              <paper-input-decorator class="bottom" flex style="color:black;" flex floatingLabel="true"  label="Subject">
+                                    <input  is="draft-subject" value="{{draftSubject}}"> 
+                              </paper-input-decorator>
+                            </paper-toolbar>
+
+                              <div style="padding-left:20px;padding-right:20px;padding-top:2-px;" flex fit>
+                                  <paper-autogrow-textarea id="draft-bodya" style="width:100%;height:100%;">
+                                  <textarea id="draft-bodyt" value="{{draftBody}}" placeholder="Say something" style="height:100%;"></textarea>
+                              </paper-autogrow-textarea>
+                              </div>
+                            
+                          </paper-header-panel>
+                       
+                          <paper-button on-tap="{{sendEmail}}" dismissive style="background-color:#0277BD;color:white;"> SEND </paper-button>
+                          <paper-icon-button on-tap="{{deleteDraft}}" icon="delete" affirmative><paper-icon-button>
+
+                    </paper-action-dialog>
+
+                    <paper-header-panel flex layout vertical mode="seamed">
+                      <!-- <paper-toolbar class="toolbar-smaller" >
+                        <paper-icon-button onclick="toggleDrawer()" icon="menu" id="navicon" >
+                        </paper-icon-button> 
+                        <div id="heading" style="width:185px;">{{heading}}</div>
+                          <paper-icon-button icon="search" ></paper-icon-button>
+                        <paper-input-decorator style="color:white;" flex label="Search ">
+                            <input  is="core-input" value="{{search}}" on-keypress="{{searchpressed}}"> 
+                        </paper-input-decorator>
+                         <paper-icon-button onclick="refreshInbox()" icon="refresh">
+                        </paper-icon-button> 
+                         <paper-icon-button icon="apps">
+                        </paper-icon-button> 
+                        <iron-image class="avatar" src="{{user.profile_image}}"></iron-image>
+                      </paper-toolbar> -->
+
+
+
+
+                      <paper-drawer-panel id="drawerPanel" flex>
+
+                        <paper-header-panel drawer id="menu">
+                            <paper-menu class="menu">
+                                <paper-item onclick="refreshInboxWithLabel('TODAY')"><iron-icon icon="today"></iron-icon> Today </paper-item>
+                                <paper-item onclick="refreshInboxWithLabel('INBOX')"><iron-icon icon="mail"></iron-icon> Inbox </paper-item>
+                                <div class="separator"></div>
+                                <paper-item onclick="refreshInboxWithLabel('STARRED')"><iron-icon icon="star"></iron-icon> Starred</paper-item>
+                                <paper-item onclick="refreshInboxWithLabel('IMPORTANT')"><iron-icon icon="turned-in"></iron-icon> Important</paper-item>
+                                <paper-item onclick="refreshInboxWithLabel('DRAFTS')"><iron-icon icon="drafts"></iron-icon> Drafts</paper-item>
+                                <paper-item onclick="refreshInboxWithLabel('SENT')"><iron-icon icon="send"></iron-icon> Sent</paper-item>
+                            </paper-menu>
+                        </paper-header-panel> 
+
+                          <paper-header-panel  main flex fit layout vertical mode="seamed"> 
+                          <iron-animated-pages   selected="{{main_page}}" transitions="slide-from-right"  layout vertical flex fit>
+                            <section flex style="width:95%;margin-left:auto;margin-right:auto;margin-top:20px;" >
+                                <template if="{{alldone}}">
+                                <div layout vertical style="width:300px;margin-left:auto;margin-right:auto;">
+                                  <img width="80" style="margin-left:auto;margin-right:auto;" src="images/noemails.png">
+                                  </img>
+                                  <span center> Hooray ! You have done all your emails.</span>
+                                </div>
+                                </template>
+
+                                <template if="{{loading}}">
+                                  <div style="width:50px;margin-left:auto;margin-right:auto;">
+                                  <paper-spinner active></paper-spinner>
+                                  </div>
+                                </template>
+                               
+                                
+                                <template repeat="{{model, index in threads}}">
+                                    <div class="thread-card"  layout horizontal hero-id="hero{{index}}" >
+                                      <div layout vertical>
+                                        <template if="{{users[model.from.name]}}"> 
+                                          <iron-image class="avatar" src="{{users[model.from.name]}}"></iron-image>
+                                        </template>
+                                        <template if="{{!users[model.from.name]}}">
+
+                                          <div class="avatar">
+                                            <span style="background-color:{{model.from.initial_color}}" class="letter" layout horizontal center-center>{{model.from.initial}}</span>
+                                          </div>
+                                        </template>
+                                       
+                                      </div>
+                                      <div onclick="viewEmail({{index}})" hero-id="{{model.id}}" hero?="{{selectedThread === model }}"  layout vertical flex style="cursor:pointer;" >
+                                        <!-- onclick="viewEmail({{index}})" -->
+                                        <div style="display:none;">{{index}}</div>
+                                        <div  layout horizontal>
+                                          <span class="thread-name">{{model.from.name}}</span>
+                                          <template if="{{model.messages.length != 1}}">
+                                          <span class="thread-length" > ({{model.messages.length}})</span>
+                                          </template>
+                                          <span flex></span>
+                                          <span class="thread-time">{{model.time}} - </span> <span class="thread-time"> {{model.date}}</span></div>
+                                        <div hero-id="{{model.id}}-subject" hero?="{{selectedThread === model }}" class="thread-subject">{{model.subject}}</div>
+                                        <div style="padding-bottom:5px;font-size:10px;">{{model.snippet}}</div>
+                                      </div>
+                                  </div>
+                                </template>
+                                
+                              <template if="{{bottom_loading}}">
+                                  <div style="width:50px;margin-top:10px;margin-bottom:10px;margin-left:auto;margin-right:auto;">
+                                  <paper-spinner active></paper-spinner>
+                                  </div>
+                              </template>
+                              <template if="{{threads.length != 0 && bottom_loading == false}}">
+                              <div style="width:100px;margin-left:auto;margin-right:auto;">
+                              <paper-button class="more-button" horizontal center-justified layout raised onclick="loadMoreEmails()"> More ...</paper-button>
+
+                               </div> 
+                              </template>
+                            </section>
+
+                           
+                            <section flex layout vertical >
+
+                                    <paper-header-panel class="email-card" style="" flex layout vertical fit>
+                                       <paper-toolbar class="toolbar-smaller">
+                                            <paper-button onclick="goback()">
+                                              <iron-icon icon="arrow-back" class="icon-with-text"></iron-icon>
+                                              <span >{{back_content}}</span>
+                                            </paper-button>
+                                            <div flex>
+                                            </div>
+                                            <paper-icon-button onclick="archiveEmail('{{selectedThread.id}}')" icon="archive">
+                                            </paper-icon-button>
+                                            <paper-icon-button onclick="trashEmail('{{selectedThread.id}}')" icon="delete">
+                                            </paper-icon-button>
+                                            <paper-icon-button on-tap="{{showLabels}}" tabindex="0" icon="folder">
+                                            </paper-icon-button>
+                                            <paper-dropdown autoFocus="{{true}}" id="labels_list" halign="right" class="dropdown">
+                                              <paper-menu class="menu" id="label_menu" style="max-height:500px;">
+                                                <template repeat="{{label in labels}}">
+                                                  <template if="{{label.type == 'user'}}">
+                                                  <paper-item onclick="moveEmailTo('{{selectedThread.id}}','{{label.id}}','{{label.name}}')">
+                                                      {{label.name}} 
+                                                  </paper-item>
+                                                  </template>
+                                                </template>
+                                              </paper-menu>
+                                            </paper-dropdown>
+                                        </paper-toolbar>
+
+                                     
+                                        <div flex fit layout vertical>
+                                            <paper-header-panel flex>
+                                             <paper-toolbar class="toolbar-smaller">
+                                              <span flex>
+                                              {{email_subject}} 
+                                              </span>
+                                              </paper-toolbar>
+
+                                              <template repeat ="{{message, index in selectedThread.messages}}">
+                                                <div flex class="email-body" layout vertical>  
+                                                  <div layout horizontal center-center>
+                                                    <template if="{{users[message.from.name]}}"> 
+                                                      <iron-image class="avatar" src="{{users[message.from.name]}}"></iron-image>
+                                                    </template>
+                                                    <template if="{{!users[message.from.name]}}">
+                                                      <div class="avatar">
+                                                        <span style="background-color:{{message.from.initial_color}}" class="letter" layout horizontal center-center>{{message.from.initial}}</span>
+                                                      </div>
+                                                    </template>
+                                                    <span >{{message.from.name}}</span>
+                                                      <span flex></span>
+                                                      <span >{{message.time}} - {{message.date}}</span>
+                                                  </div>
+                                                 
+                                                  <div style="padding-top:20px;padding-left:45px;">
+                                                  <div id="body_holder-{{index}}">
+                                                  </div>
+                                                  </div>
+                                                </div>
+                                              </template>
+                                              
+                                              </paper-header-panel>
+                                          </div>
+                                     
+                                    </paper-header-panel>
+                            </paper-header-panel>
+                        </section>
+                      </iron-animated-pages>
+                             </iron-header-pane>
+
+
+
+
+                      </paper-drawer-panel>
+                      
+                     <paper-fab on-tap ="{{showNewEmail}}" class="down-right-button" icon="add"></paper-fab>
+                    </paper-header-panel>
+              </section>
+
+            </iron-pages>
+      </more-route-selector>
+
+    <paper-toast id="emailTrashed" text="Moved to Trashed" ><div onclick="untrashEmail()" style="color:#eeff41;"> Undo </div></paper-toast>
+    <paper-toast id="emailMoved" text="Moved to {{movetofolder}}" ></paper-toast>
+    <paper-toast id="nomoreemails" text="No More Emails To Load" ></paper-toast>
+    <paper-toast id="emailSent" text="Email Sent" ></paper-toast>
+    <paper-toast id="emailNotSent" text="Email Not Sent" ></paper-toast>
+    <paper-toast id="emailArchived" text="Archived" ><div onclick="unarchiveEmail()" style="color:#eeff41;"> Undo </div></paper-toast>
+
+
+
+        
+    </template>
+
+  </body>
+
+    <script src="https://apis.google.com/js/client.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="scripts/mime_js.js"></script>
+    <script src="scripts/base64.js"></script>
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/email_modify.js"></script>
+    <script src="scripts/view_navigate.js"></script>
+</html>

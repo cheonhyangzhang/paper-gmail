@@ -1,0 +1,185 @@
+/*/* Hide underline for paper-input*/
+.underline{
+	display:none;
+}
+.menu-icon{
+	margin-left:8px;
+	margin-right:32px;
+}
+.menu-item{
+	cursor:pointer;
+}
+.menu-item:hover{
+	background-color: #e7e7e7;
+}
+#side-menu{
+
+}
+
+
+
+
+
+[drawer]{
+	background-color: #ffffff;
+	-webkit-box-shadow: 0.5px 0px 1px 0.5px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0.5px 0px 1px 0.5px rgba(0,0,0,0.75);
+	box-shadow: 0.5px 0px 1px 0.5px rgba(0,0,0,0.75);
+}
+[main]{
+	background-color:#f5f5f5;
+}
+#heading{
+}
+.search-bar{
+	margin-left:100px;
+}
+.app-header{
+	height:40px;
+}
+.more-button{
+	margin-top:10px;
+	margin-bottom:10px;
+	/*width:100px;*/
+}
+
+
+
+
+
+
+
+/*.gmail_quote{
+	display:none;
+}
+*/
+
+
+
+
+
+
+
+paper-toast{
+  /*bottom: 0;*/
+  /*left: 0;*/
+  /*width: 100%;*/
+}
+core-drawer-panel:not[narrow] drawer{
+
+}
+.letter {
+	border-radius: inherit;
+	color:white;
+	width: 100%;
+	height: 100%;
+	transition: opacity 200ms ease-in-out 100ms;
+	will-change: opacity;
+	text-transform: uppercase;
+}
+
+.avatar{
+	width:30px;
+	height:30px;
+	border-radius: 50%;
+	margin-right:16px;
+	background-color: #00BCD4;
+}
+core-toolbar{
+	background-color: #03A9F4;
+	color:white;
+	font-family: sans-serif;
+}
+core-header-panel #dropShadow{
+	display:none;
+}
+[main] core-toolbar{
+	background-color: #ffffff;
+	color:#757575;
+	font-family: sans-serif;
+}
+.thread-name{
+	padding-bottom:5px;font-weight: bold;
+}
+.thread-length{
+	font-size:15px;
+	color: #959595;
+	padding-left:5px;
+}
+.thread-time{
+	font-size:13px;
+	color:#757575;
+}
+.thread-subject{
+	padding-top:5px;padding-bottom:5px;font-size:14px;font-weight: bold;
+}
+.thread-card{
+	min-height:60px;
+	width:95%;
+	background-color: white;
+	padding:16px;
+	-webkit-box-shadow: 0px 2px 2px 2px rgba(0,0,0,0.5);
+	-moz-box-shadow: 0px 2px 2px 2px rgba(0,0,0,0.5);
+	box-shadow: 0px 2px 2px 2px rgba(0,0,0,0.5);
+}
+.email-card{
+	width:95%;margin-left:auto;margin-right:auto;margin-top:20px;	
+	margin-bottom:20px;
+	-webkit-box-shadow: 0px 2px 2px 2px rgba(0,0,0,0.5);
+	-moz-box-shadow: 0px 2px 2px 2px rgba(0,0,0,0.5);
+	box-shadow: 0px 2px 2px 2px rgba(0,0,0,0.5);
+}
+.email-header{
+	height:20px;
+	background-color: white;
+	padding:16px;
+	-webkit-box-shadow: 0px 0.5px 1px 0.5px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 0.5px 1px 0.5px rgba(0,0,0,0.75);
+	box-shadow: 0px 0.5px 1px 0.5px rgba(0,0,0,0.75);
+}
+.email-body{
+	background-color: white;
+	padding:16px;
+	-webkit-box-shadow: 0px 0.5px 1px 0.5px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 0.5px 1px 0.5px rgba(0,0,0,0.75);
+	box-shadow: 0px 0.5px 1px 0.5px rgba(0,0,0,0.75);
+}
+.down-right-button{
+	position:absolute;
+	bottom:20px;
+	right:20px;
+}
+
+
+.paper-card{
+	width:100%;
+}
+
+
+
+
+.icon-with-text{
+  margin-right: 14px !important;
+}
+
+.separator {
+  padding: 5px;
+  font-size: 14px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.dark-grey{
+	color: #656565;
+}
+.black{
+	color: black;
+}
+.blue{
+	color: #03A9F4;
+}
+.yellow{
+	color: yellow;
+}
+.red{
+	color:red;
+}*/

@@ -1,0 +1,25 @@
+{
+  "name": "gmail",
+  "version": "0.2",
+  "homepage": "https://github.com/cheonhyangzhang/gmail",
+  "authors": [
+    "Tianxiang Zhang cenhiangapply@gmail.com"
+  ],
+  "description": "A material desigin verions of Gmailusing Polymer framework",
+  "main": "index.html",
+  "license": "https://github.com/cheonhyangzhang/gmail/blob/gh-pages/LICENSE",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "~1.1.1",
+    "paper-elements": "PolymerElements/paper-elements#~1.0.5",
+    "iron-elements": "PolymerElements/iron-elements#~1.0.3",
+    "google-signin": "GoogleWebComponents/google-signin#~1.0.3",
+    "more-routing": "PolymerLabs/more-routing#~1.0.0"
+  }
+}

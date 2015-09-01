@@ -1,0 +1,39 @@
+application: gmail-polymer
+version: 0-1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+skip_files:
+- ^(.*/)?.*/node_modules/.*$
+
+handlers:
+- url: /images
+  static_dir: images
+
+- url: /scripts
+  static_dir: scripts
+- url: /stylesheets
+  static_dir: stylesheets
+- url: /htmls
+  static_dir: htmls
+- url: /bower_components
+  static_dir: bower_components
+
+- url: (.*)/
+  static_files: index.html
+  upload: index.html
+  login: required
+  secure: always
+
+- url: (.*)
+  static_files: \1
+  upload: ./
+  login: required
+  secure: always
+
+libraries:
+- name: endpoints
+  version: "1.0"
+
+

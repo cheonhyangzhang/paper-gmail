@@ -1,0 +1,266 @@
+<!-- Author: Tianxiang Zhang <cenhiangapply@gmail.com> -->
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1">
+    <title>Paper Gmail</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <link rel="shortcut icon" href="images/gmail.ico">
+
+    <link rel="import" href="htmls/elements.html">
+    <link rel="import" href="htmls/route.html">
+
+    <link rel="stylesheet" href="stylesheets/app.css">
+
+  </head>
+
+  <body class="fullbleed layout vertical">
+    <template is="dom-bind" id="app">
+      <more-route-selector>
+            <iron-pages selected="{{route}}" class="fullbleed fit">
+              <section route="login" >
+                  <div id="loginscreen" class="layout vertical center-center fit"
+                     class="{{ {show: !isAuthenticated} | tokenList }}">
+                  <div>
+                    <img style="padding:20px;" src="images/gmail.png" width="150" ></img>
+                    <img style="padding:20px;" src="images/polymer.svg" width="150"></img>
+                  </div>
+                  <div style="padding:20px;font-size:20px;">
+                    A Material Desgin Gmail Web Application using Polymer 
+                  </div>
+                  <google-signin width="wide" height="tall"
+                      client-id="734681955886-tfnfanpm9kqt60lvjrjqj9mc6emv80qa.apps.googleusercontent.com"
+                      scopes="profile email https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.compose https://mail.google.com/"
+                      on-google-signin-success="onSigninSuccess"
+                      on-google-signin-failure="onSigninFailure"></google-signin>
+                  </div>
+              </section>
+              <section route="inbox" class="layout vertical fit">
+                    <paper-dialog style="position:fixed;top:60px;right:10px;width:90%;height:80%;" id="newEmail" entry-animation="scale-up-animation"
+                                  exit-animation="fade-out-animation">
+           
+                      <paper-input label="To" value="{{draftTo}}">
+                      </paper-input>
+                      <paper-input label="Subject" value="{{draftSubject}}">
+                      </paper-input>
+                      <div style="withd:100%;padding-left:22px;">
+                      <iron-autogrow-textarea style="width:100%;border:none;" bind-value="{{draftBody}}" placeholder="Say something"  id="draft-bodya" >
+                      </iron-autogrow-textarea>
+                      </div>
+                      <div style="position:fixed;top:90px;right:60px;" class="buttons">
+                        <paper-button on-click="deleteDraft" dialog-dismiss>Drop</paper-button>
+                        <paper-button on-tap="sendEmail" dialog-confirm>SEND</paper-button>
+                      </div>
+                    </paper-dialog>
+
+                    <paper-header-panel class="flex layout vertical">
+                      <paper-toolbar style="background-color:#00B0FF" class="toolbar-smaller">
+                        <paper-icon-button onclick="toggleDrawer()" icon="menu" id="navicon" >
+                        </paper-icon-button> 
+                        <div id="heading" style="width:185px;">{{heading}}</div>
+                        <paper-input-container no-label-float="true" style="background-color:#81D4FA;margin-right:30px;" class="flex">
+                            <label>Search</label>
+                            <iron-icon style="margin-left:15px;margin-right:15px;" prefix icon="search"></iron-icon>
+                            <input is="iron-input" value="{{search}}" on-keypress="searchpressed">
+                        </paper-input-container>
+                         <paper-icon-button onclick="refreshInbox()" icon="refresh">
+                        </paper-icon-button> 
+                         <paper-icon-button icon="apps">
+                        </paper-icon-button> 
+                        <iron-image class="avatar" src="{{user.profile_image}}"></iron-image>
+                      </paper-toolbar>
+
+                     <paper-drawer-panel id="drawerPanel" flex>
+                          <paper-menu id="side-menu" drawer>
+                                  <paper-item class="menu-item" onclick="refreshInboxWithLabel('TODAY')"><iron-icon class="menu-icon" icon="today"></iron-icon> Today </paper-item>
+                                  <paper-item class="menu-item" onclick="refreshInboxWithLabel('INBOX')"><iron-icon class="menu-icon" icon="mail"></iron-icon> Inbox </paper-item>
+                                  <div class="separator"></div>
+                                  <paper-item class="menu-item" onclick="refreshInboxWithLabel('STARRED')"><iron-icon class="menu-icon" icon="star"></iron-icon> Starred</paper-item>
+                                  <paper-item class="menu-item" onclick="refreshInboxWithLabel('IMPORTANT')"><iron-icon class="menu-icon" icon="turned-in"></iron-icon> Important</paper-item>
+                                  <paper-item class="menu-item" onclick="refreshInboxWithLabel('DRAFTS')"><iron-icon class="menu-icon" icon="drafts"></iron-icon> Drafts</paper-item>
+                                  <paper-item class="menu-item" onclick="refreshInboxWithLabel('SENT')"><iron-icon class="menu-icon" icon="send"></iron-icon> Sent</paper-item>
+                          </paper-menu>
+                          <paper-header-panel  main class="flex fit layout vertical" mode="seamed"> 
+                                <iron-pages selected="{{main_page}}" class="layout vertical flex fit">
+                                  <section style="width:95%;margin-left:auto;margin-right:auto;margin-top:20px;margin-bottom:20px;" >
+                                      <template is="dom-if" if="{{alldone}}">
+                                      <div class="layout vertical" style="width:300px;margin-left:auto;margin-right:auto;">
+                                        <img width="80" style="margin-left:auto;margin-right:auto;" src="images/noemails.png">
+                                        </img>
+                                        <span center> Hooray ! You have done all your emails.</span>
+                                      </div>
+                                      </template>
+
+                                      <template is="dom-if" if="{{loading}}">
+                                        <div style="width:50px;margin-left:auto;margin-right:auto;">
+                                        <paper-spinner active></paper-spinner>
+                                        </div>
+                                      </template>
+                                     
+                                      <template is="dom-repeat" items="{{threads}}">
+                                          <!-- <div class="thread-card layout horizontal" > -->
+                                          <paper-card style="margin-bottom:1px;" class="layout horizontal flex">
+                                           <div class="card-content layout horizontal flex">
+                                            <div class="layout vertical">
+                                              <template is="dom-if" if="{{_hasProfileImage(users, item.from.name)}}"> 
+                                                <iron-image class="avatar" src="{{users[item.from.name]}}"></iron-image>
+                                              </template>
+                                              <template is="dom-if" if="{{!_hasProfileImage(item.from.name)}}">
+                                                <div class="avatar">
+                                                  <span style$="{{_computeProfileColor(item.from.initial_color)}}" class="letter layout horizontal center-center" >{{item.from.initial}}</span>
+                                                </div>
+                                              </template>
+                                            </div>
+                                            <!-- <div onclick="viewEmail()"  class="layout vertical flex" style="cursor:pointer;" > -->
+                                            <div on-tap="viewEmail"  class="layout vertical flex" style="cursor:pointer;" >
+                                              <!-- onclick="viewEmail({{index}})" -->
+                                              <div style="display:none;">{{index}}</div>
+                                              <div  class="layout horizontal">
+                                                <span class="thread-name flex">{{item.from.name}}</span>
+                                                <template if="{{item.messages.length != 1}}">
+                                                <span class="thread-length" > ({{item.messages.length}})</span>
+                                                </template>
+                                                <span flex></span>
+                                                <span class="thread-time">{{item.time}}</span><span class="thread-time">-</span><span class="thread-time">{{item.date}}</span></div>
+                                              <div class="thread-subject">{{item.subject}}</div>
+                                              <div style="padding-bottom:5px;font-size:10px;">{{item.snippet}}</div>
+                                            </div>
+                                          </div>
+                                        </paper-card>
+                                        <!-- </div> -->
+                                      </template>
+                                      
+                                    <template is="dom-if" if="{{bottom_loading}}">
+                                        <div style="width:50px;margin-top:10px;margin-bottom:10px;margin-left:auto;margin-right:auto;">
+                                        <paper-spinner active></paper-spinner>
+                                        </div>
+                                    </template>
+                                    <template is="dom-if" if="{{threads.length != 0 && bottom_loading == false}}">
+                                    <div style="width:100px;margin-left:auto;margin-right:auto;">
+                                    <paper-button class="more-button" horizontal center-justified layout raised onclick="loadMoreEmails()"> More ...</paper-button>
+
+                                     </div> 
+                                    </template>
+                                  </section>
+
+                                 
+                                  <section style="width:95%;margin-left:auto;margin-right:auto;margin-top:20px;margin-bottom:20px;">
+                                    <paper-dialog style="position:fixed;top:74px;right:8px;" id="labels_list" entry-animation="scale-up-animation"
+                                                        exit-animation="fade-out-animation">
+                                      <paper-menu>
+                                       <template is="dom-repeat" items="{{labels}}">
+                                        <template is="dom-if" if="{{_isUserLable(item)}}">
+                                        <paper-item class="menu-item" on-click="appMoveEmailTo">
+                                            <span>{{item.name}}</span>
+                                        </paper-item>
+                                        </template>
+                                      </template>
+                                      </paper-menu>
+                                    </paper-dialog>
+
+
+                                    <paper-card class="layout horizontal flex">
+                                      <div class="layout horizontal flex">
+                                        <paper-button onclick="goback()">
+                                          <iron-icon icon="arrow-back" class="icon-with-text"></iron-icon>
+                                        </paper-button>
+                                        <div class="flex">
+                                        </div>
+
+                                        <paper-button on-click="appArchiveEmail" >
+                                          <iron-icon icon="archive"></iron-icon>
+                                        </paper-button>
+                                        <paper-button on-click="appTrashEmail">
+                                          <iron-icon icon="delete"></iron-icon>
+                                        </paper-button>
+                                        <paper-button on-tap="showLabels">
+                                          <iron-icon icon="folder"></iron-icon>
+                                        </paper-button>
+                                   <!--      <paper-dropdown autoFocus="{{true}}" id="labels_list" halign="right" class="dropdown">
+                                          <paper-menu class="menu" id="label_menu" style="max-height:500px;">
+                                            <template repeat="{{label in labels}}">
+                                              <template if="{{label.type == 'user'}}">
+                                              <paper-item onclick="moveEmailTo('{{selectedThread.id}}','{{label.id}}','{{label.name}}')">
+                                                  {{label.name}} 
+                                              </paper-item>
+                                              </template>
+                                            </template>
+                                          </paper-menu>
+                                        </paper-dropdown> -->
+                                      </div>
+                                      <div class="separator"></div>
+                                      <div style="padding:15px;">
+                                        <b><span>{{email_subject}}</span></b> 
+                                      </div>
+                                      <template is="dom-repeat" items="{{selectedThread.messages}}">
+                                            <div class="separator"></div>
+                                            <div class="card-content layout horizontal flex">
+                                              <div class="layout vertical">
+                                                  <template is="dom-if" if="{{_hasProfileImage(users, item.from.name)}}"> 
+                                                  <iron-image class="avatar" src="{{users[item.from.name]}}"></iron-image>
+                                                </template>
+                                                <template is="dom-if" if="{{!_hasProfileImage(users, item.from.name)}}">
+                                                  <div class="avatar">
+                                                    <span style$="{{_computeProfileColor(item.from.initial_color)}}" class="letter layout horizontal center-center">{{item.from.initial}}</span>
+                                                  </div>
+                                                </template>
+                                              </div>
+                                              <div>
+                                                <span >{{item.from.name}}</span>
+                                              </div>
+                                              <div class="flex">
+                                              </div>
+                                              <div>
+                                                <span>{{item.time}}</span> <span>{{item.date}}</span>
+                                              </div>
+                                            </div>
+
+                                            <!-- <div id="body_holder-{{index}}"> -->
+                                            <div style="padding-left:40px;padding-right:20px;padding-bottom:20px;" id="{{_computeBodyId(index)}}">
+                                              <!-- content -->
+                                            </div>
+                                            
+
+                                      </template>
+                                      </div>
+                                      <!-- <div class="card-actions"> -->
+                                        <!-- <paper-button>Some action</paper-button> -->
+                                      <!-- </div> -->
+                                    </paper-card>
+                                  </section>
+                                </iron-pages>
+                         
+                          </paper-header-panel>
+                      </paper-drawer-panel>
+
+                     <paper-fab on-tap ="showNewEmail" class="down-right-button" icon="add"></paper-fab>
+                    </paper-header-panel>
+              </section>
+            </iron-pages>
+    </more-route-selector>
+
+    <paper-toast id="emailTrashed" text="Moved to Trashed" ><span role="button" on-click="appUntrashEmail" style="color:#eeff41;"> Undo </span></paper-toast>
+    <paper-toast id="emailMoved" text="Moved to {{movetofolder}}" ></paper-toast>
+    <paper-toast id="nomoreemails" text="No More Emails To Load" ></paper-toast>
+    <paper-toast id="emailSent" text="Email Sent" ></paper-toast>
+    <paper-toast id="emailNotSent" text="Email Not Sent" ></paper-toast>
+    <paper-toast id="emailArchived" text="Archived" ><span role="button" on-click="appUnarchiveEmail" style="color:#eeff41;"> Undo </span></paper-toast>
+    </template>
+
+  </body>
+
+    <script src="https://apis.google.com/js/client.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="scripts/mime_js.js"></script>
+    <script src="scripts/base64.js"></script>
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/email_modify.js"></script>
+    <script src="scripts/view_navigate.js"></script>
+</html>
