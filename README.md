@@ -3,7 +3,7 @@
 ## Overview
 A material design version of gmail web app using [Polymer](https://www.polymer-project.org/1.0/). This project is using **Polymer 1.0**.
 
-**Note**: This project originally uses Polymer 0.5. The migration work is still WIP and has not been done yet, as of Sep 1st, 2015.
+**Note**: This project originally uses Polymer 0.5. The migration work is still WIP and has not been done yet, as of Sep 1st, 2015. Some of the features supported listed below might not be working. 
 
 **Note**: This web is still work in progress. Not all of the gmail features have been implemented. Since the app is using Google's Gmail Rest API, only features that are supported by Gmail REST API will be implemented in the future. 
 
