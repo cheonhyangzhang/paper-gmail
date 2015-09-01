@@ -1,4 +1,7 @@
 /*/* Hide underline for paper-input*/
+body{
+	font-family: Roboto, Helvetica, Arial, sans-serif;	
+}
 .underline{
 	display:none;
 }
