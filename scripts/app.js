@@ -1,3 +1,4 @@
+console.log("app.js");
 DEBUG = false;
 
 function nowSearchTerm(){
@@ -54,7 +55,7 @@ app.newEmailOpen = false;
 // app.list_q = "category:primary || label:important";
 app.list_q = nowSearchTerm();
 app.labels = [];
-
+app.showMoreButton = false;
 app.draftTo = "";
 app.draftSubject = "";
 app.draftBody = "";
@@ -69,6 +70,7 @@ var labels_search = {
 	'DRAFTS':'label:drafts !is:chats',
 	'SENT':'label:sent !is:chats'
 }
+
 app._isUserLable = function(label){
 	if (label.type == 'user'){
 		return true;
@@ -85,6 +87,11 @@ app._hasProfileImage = function(dict, val){
 	//need to find a way to determine if shows the avatar
 	//need to wait getAllUsers finish
 	return false;
+}
+app.bodyClick = function(){
+	if (app.searching == true){
+		app.searching = false;
+	}
 }
 app.showNewEmail = function(e){
 	console.log("showNewEmail");
@@ -328,7 +335,15 @@ app.fetchMail = function(q, checkNew) {
 		});
     });
 
-	batch.then();
+	batch.then(function(){
+		console.log("all threads loades");	
+		if (typeof(nextPageToken) != 'undefined' && nextPageToken != ""){
+			app.showMoreButton = true;
+		}
+		else{
+			app.showMoreButton = false;
+		}
+	});
 	});
 };
 function getAllUserProfileImages(users, nextPageToken, callback) {

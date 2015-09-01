@@ -20,9 +20,9 @@
 
   </head>
 
-  <body class="fullbleed layout vertical">
+  <body class="fullbleed layout vertical" >
     <template is="dom-bind" id="app">
-      <more-route-selector>
+      <more-route-selector on-click="bodyClick">
             <iron-pages selected="{{route}}" class="fullbleed fit">
               <section route="login" >
                   <div id="loginscreen" class="layout vertical center-center fit"
@@ -60,21 +60,24 @@
                     </paper-dialog>
 
                     <paper-header-panel class="flex layout vertical">
-                      <paper-toolbar style="background-color:#00B0FF" class="toolbar-smaller">
-                        <paper-icon-button onclick="toggleDrawer()" icon="menu" id="navicon" >
-                        </paper-icon-button> 
-                        <div id="heading" style="width:185px;">{{heading}}</div>
-                        <paper-input-container no-label-float="true" style="background-color:#81D4FA;margin-right:30px;" class="flex">
-                            <label>Search</label>
-                            <iron-icon style="margin-left:15px;margin-right:15px;" prefix icon="search"></iron-icon>
-                            <input is="iron-input" bind-value="{{search}}" on-keypress="searchpressed">
-                        </paper-input-container>
-                         <paper-icon-button onclick="refreshInbox()" icon="refresh">
-                        </paper-icon-button> 
-                         <paper-icon-button icon="apps">
-                        </paper-icon-button> 
-                        <iron-image class="avatar" src="{{user.profile_image}}"></iron-image>
-                      </paper-toolbar>
+                        <paper-toolbar style="background-color:#00B0FF" class="toolbar-smaller">
+                          <paper-icon-button onclick="toggleDrawer()" icon="menu" id="navicon" >
+                          </paper-icon-button> 
+                          <div id="heading" style="width:185px;"><span>{{heading}}</span>
+                          </div>
+
+                          <paper-input-container no-label-float="true" style="background-color:#81D4FA;margin-right:30px;" class="flex">
+                              <label>Search</label>
+                              <iron-icon style="margin-left:15px;margin-right:15px;" prefix icon="search"></iron-icon>
+                              <input is="iron-input" bind-value="{{search}}" on-keypress="searchpressed">
+                          </paper-input-container>
+                           <paper-icon-button onclick="refreshInbox()" icon="refresh">
+                          </paper-icon-button> 
+                           <paper-icon-button icon="apps">
+                          </paper-icon-button> 
+                          <iron-image class="avatar" src="{{user.profile_image}}"></iron-image>
+                        </paper-toolbar>
+
 
                      <paper-drawer-panel id="drawerPanel" flex>
                           <paper-menu id="side-menu" drawer>
@@ -141,11 +144,10 @@
                                         <paper-spinner active></paper-spinner>
                                         </div>
                                     </template>
-                                    <template is="dom-if" if="{{threads.length != 0 && bottom_loading == false}}">
-                                    <div style="width:100px;margin-left:auto;margin-right:auto;">
-                                    <paper-button class="more-button" horizontal center-justified layout raised onclick="loadMoreEmails()"> More ...</paper-button>
-
-                                     </div> 
+                                    <template is="dom-if" if="{{showMoreButton}}">
+                                        <div style="width:100px;margin-left:auto;margin-right:auto;">
+                                          <paper-button class="more-button" horizontal center-justified layout raised onclick="loadMoreEmails()"> More ...</paper-button>
+                                        </div> 
                                     </template>
                                   </section>
 
