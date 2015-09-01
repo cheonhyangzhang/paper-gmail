@@ -45,8 +45,12 @@
                     <paper-dialog style="position:fixed;top:60px;right:10px;width:90%;height:80%;" id="newEmail" entry-animation="scale-up-animation"
                                   exit-animation="fade-out-animation">
            
-                      <paper-input label="To" value="{{draftTo}}">
-                      </paper-input>
+
+                      <!-- <paper-input label="To" value="{{draftTo}}"> -->
+                      <!-- </paper-input> -->
+                      <paper-tags-input label="To" placeholder="Add a recipient" tags="{{draftTo}}">
+                      </paper-tags-input>
+
                       <paper-input label="Subject" value="{{draftSubject}}">
                       </paper-input>
                       <div style="withd:100%;padding-left:22px;">
@@ -153,8 +157,7 @@
 
                                  
                                   <section style="width:95%;margin-left:auto;margin-right:auto;margin-top:20px;margin-bottom:40px;">
-                                    <paper-dialog style="position:fixed;top:74px;right:8px;" id="labels_list" entry-animation="scale-up-animation"
-                                                        exit-animation="fade-out-animation">
+                                    <paper-dialog style="position:fixed;top:74px;right:8px;" id="labels_list" >
                                       <paper-menu>
                                        <template is="dom-repeat" items="{{labels}}">
                                         <template is="dom-if" if="{{_isUserLable(item)}}">
@@ -252,7 +255,7 @@
                                           </div>
                                           <div>
                                             <paper-button on-tap="replyEmail" >SEND</paper-button>
-                                            <paper-button on-click="dropReply" >Drop</paper-button>
+                                            <paper-button on-tap="dropReply" >Drop</paper-button>
                                           </div>
                                         </div>
                                       

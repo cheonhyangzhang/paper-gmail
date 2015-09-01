@@ -1,4 +1,3 @@
-console.log("app.js");
 DEBUG = false;
 
 function nowSearchTerm(){
@@ -56,7 +55,7 @@ app.newEmailOpen = false;
 app.list_q = nowSearchTerm();
 app.labels = [];
 app.showMoreButton = false;
-app.draftTo = "";
+app.draftTo = [];
 app.draftSubject = "";
 app.draftBody = "";
 
@@ -128,9 +127,13 @@ app.closeNewEmail = function(e){
 }
 app.deleteDraft = function(e){
 	console.log("deleteDraft");
-	app.draftTo = "";
+	app.draftTo = [];
 	app.draftSubject = "";
 	app.draftBody = "";
+}
+app.dropReply = function(e){
+	app.replyBody = "";
+	app.replyToList = app.replyAllTo;
 }
 app.replyEmail = function(e){
 	console.log("replyEmil");
@@ -178,18 +181,18 @@ app.replyEmail = function(e){
   	});
 }
 app.sendEmail = function(e){
-	// console.log("sending email");
-	// console.log(app.draftTo);
-	// console.log(app.draftSubject);
-	// console.log(app.draftBody);
-
-	if (typeof(app.draftTo) == 'undefined' || app.draftTo == ""){
+	console.log("sending email");
+	console.log(app.draftTo);
+	console.log(app.draftSubject);
+	console.log(app.draftBody);
+	
+	if (typeof(app.draftTo) == 'undefined' || app.draftTo.length == 0){
 		document.querySelector('#emailNotSent').show();
 		return;
 	}
 	var mail = {  
 	    // "to": "email1@example.com, email2@example.com",
-	    "to": app.draftTo,
+	    "to": app.draftTo.join(","),
 	    "subject": app.draftSubject,
 	    "fromName": app.user.name,
 	    "from": app.user.email,
@@ -619,6 +622,7 @@ app.viewEmail = function(event){
 	}	
 
 	 app.email_subject = app.selectedThread.subject;
+	 app.replyBody = "";
 }
 
 app.onSigninFailure = function(e, detail, sender) {
