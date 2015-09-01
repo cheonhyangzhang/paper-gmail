@@ -84,7 +84,6 @@ app._hasProfileImage = function(dict, val){
 	//todo
 	//need to find a way to determine if shows the avatar
 	//need to wait getAllUsers finish
-	console.log("_hasProfileImage");
 	return false;
 }
 app.showNewEmail = function(e){
@@ -170,7 +169,8 @@ app.showLabels = function(e){
 
 
 app.searchpressed = function(e){
-	console.log("searchpressed");
+	// console.log("searchpressed");
+	// console.log(app.search);
 	if (e.which == 13){
 		if (typeof(app.search) !="undefined" && app.search != ""){
 			searchEmails(app.search);
@@ -535,9 +535,9 @@ app.onSigninSuccess = function(e, detail, sender) {
 		  var users = {};
 
 		  getAllUserProfileImages(users, null, function(users) {
-		  	console.log("getAllUserProfileImages");
+		  	// console.log("getAllUserProfileImages");
 		    app.users = users;
-		  	console.log(app.users);
+		  	// console.log(app.users);
 		    app.users[app.user.name] = app.user.profile; // signed in user.
 		    // console.log(app.users);
 		  });

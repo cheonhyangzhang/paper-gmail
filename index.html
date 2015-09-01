@@ -67,7 +67,7 @@
                         <paper-input-container no-label-float="true" style="background-color:#81D4FA;margin-right:30px;" class="flex">
                             <label>Search</label>
                             <iron-icon style="margin-left:15px;margin-right:15px;" prefix icon="search"></iron-icon>
-                            <input is="iron-input" value="{{search}}" on-keypress="searchpressed">
+                            <input is="iron-input" bind-value="{{search}}" on-keypress="searchpressed">
                         </paper-input-container>
                          <paper-icon-button onclick="refreshInbox()" icon="refresh">
                         </paper-icon-button> 
