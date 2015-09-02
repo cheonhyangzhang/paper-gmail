@@ -72,6 +72,14 @@ var labels_search = {
 	'DRAFTS':'label:drafts !is:chats',
 	'SENT':'label:sent !is:chats'
 }
+app._shouldShowMessagesLength = function(length){
+	if (length == 1){
+		return false;
+	}
+	else{
+		return true;
+	}
+}
 app._abstractEmailsFromTo = function(to){
 	var tos_list = to.split(',')
 	for (var i = 0; i < tos_list.length; i ++){

@@ -129,11 +129,14 @@
                                               <!-- onclick="viewEmail({{index}})" -->
                                               <div style="display:none;">{{index}}</div>
                                               <div  class="layout horizontal">
-                                                <span class="thread-name flex">{{item.from.name}}</span>
-                                                <template if="{{item.messages.length != 1}}">
-                                                <span class="thread-length" > ({{item.messages.length}})</span>
+                                                <span class="thread-name">{{item.from.name}}</span>
+
+                                                <!-- <span class="flex">{{_threadMessages(item.messages.length)}}</span> -->
+
+                                                <template is="dom-if" if="{{_shouldShowMessagesLength(item.messages.length)}}">
+                                                <span class="thread-length" >(<span>{{item.messages.length}}</span>)</span>
                                                 </template>
-                                                <span flex></span>
+                                                <span class="flex"></span>
                                                 <span class="thread-time">{{item.time}}</span><span class="thread-time">-</span><span class="thread-time">{{item.date}}</span></div>
                                               <div class="thread-subject">{{item.subject}}</div>
                                               <div style="padding-bottom:5px;font-size:10px;">{{item.snippet}}</div>
