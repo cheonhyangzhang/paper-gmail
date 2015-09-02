@@ -464,6 +464,9 @@ searchEmails = function(search){
 	refreshInbox();
 }
 refreshInboxWithLabel = function(label){
+	//close drawer if it's open	
+	drawer = document.querySelector('#drawerPanel');
+	drawer.togglePanel();
 	app.heading = label;
 	if (label == "TODAY"){
 		app.list_q = nowSearchTerm();
