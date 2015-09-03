@@ -32,6 +32,27 @@ The stable version is hosted in [Google's App Engine](https://gmail-polymer.apps
 Sometimes it keeps refreshing for the first time. In this case, copy the url and paste it in a new tab will work.
 The first time you access the app, you will need to sign in with your Google account. Actually, this is just to gain authorization from you to get emails and write emails as behalf of you.
 
+## Quick look 
+inbox
+
+[inbox](https://raw.githubusercontent.com/cheonhyangzhang/paper-gmail/master/demo/inbox.png)
+
+read email
+
+[viewEmail](https://raw.githubusercontent.com/cheonhyangzhang/paper-gmail/master/demo/viewEmail.png)
+
+reply to email
+
+[replyEmail](https://raw.githubusercontent.com/cheonhyangzhang/paper-gmail/master/demo/replyEmail.png)
+
+send email
+
+[sendEmail](https://raw.githubusercontent.com/cheonhyangzhang/paper-gmail/master/demo/sendEmail.png)
+
+search email
+
+[search](https://raw.githubusercontent.com/cheonhyangzhang/paper-gmail/master/demo/search.png)
+
 ## Credits
 This project was originally inspired by [this project](https://github.com/ebidel/polymer-gmail).
 
