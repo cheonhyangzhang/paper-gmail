@@ -32,6 +32,9 @@ The stable version is hosted in [Google's App Engine](https://gmail-polymer.apps
 Sometimes it keeps refreshing for the first time. In this case, copy the url and paste it in a new tab will work.
 The first time you access the app, you will need to sign in with your Google account. Actually, this is just to gain authorization from you to get emails and write emails as behalf of you.
 
+## Credits
+This project was originally inspired by [this project](https://github.com/ebidel/polymer-gmail).
+
 
 ## Resources 
 * [Gmail REST API](https://developers.google.com/gmail/api/)
