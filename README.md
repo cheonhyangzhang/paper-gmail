@@ -35,23 +35,23 @@ The first time you access the app, you will need to sign in with your Google acc
 ## Quick look 
 inbox
 
-[inbox](https://raw.githubusercontent.com/cheonhyangzhang/paper-gmail/master/demo/inbox.png)
+![inbox](https://raw.githubusercontent.com/cheonhyangzhang/paper-gmail/master/demo/inbox.png)
 
 read email
 
-[viewEmail](https://raw.githubusercontent.com/cheonhyangzhang/paper-gmail/master/demo/viewEmail.png)
+![viewEmail](https://raw.githubusercontent.com/cheonhyangzhang/paper-gmail/master/demo/viewEmail.png)
 
 reply to email
 
-[replyEmail](https://raw.githubusercontent.com/cheonhyangzhang/paper-gmail/master/demo/replyEmail.png)
+![replyEmail](https://raw.githubusercontent.com/cheonhyangzhang/paper-gmail/master/demo/replyEmail.png)
 
 send email
 
-[sendEmail](https://raw.githubusercontent.com/cheonhyangzhang/paper-gmail/master/demo/sendEmail.png)
+![sendEmail](https://raw.githubusercontent.com/cheonhyangzhang/paper-gmail/master/demo/sendEmail.png)
 
 search email
 
-[search](https://raw.githubusercontent.com/cheonhyangzhang/paper-gmail/master/demo/search.png)
+![search](https://raw.githubusercontent.com/cheonhyangzhang/paper-gmail/master/demo/search.png)
 
 ## Credits
 This project was originally inspired by [this project](https://github.com/ebidel/polymer-gmail).
