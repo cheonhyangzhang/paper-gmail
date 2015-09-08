@@ -337,9 +337,26 @@ loadThreads = function(threads, checkNew){
 		// console.log(threads);
 	}	
 }
-app._computeBodyId = function(index){
-	console.log("_computeBodyId");
+
+app.toggleEmailBody = function(e){
+	console.log("toggleEmailBody");
+	var index = e.model.item.index;
 	console.log(index);
+	var body_holder = document.getElementById('body_holder-'+index);
+	console.log(body_holder);
+	if (typeof(body_holder) != 'undefined' && body_holder != null){
+		if (body_holder.style.display == "none"){
+			body_holder.style.display = "block";
+		}
+		else{
+			body_holder.style.display = "none";
+		}
+	}
+}
+// app._computeBodyHeaderId = function(index){
+	// return "body_header-" + index;
+// }
+app._computeBodyId = function(index){
 	return "body_holder-" + index;
 }
 app.appMoveEmailTo = function(event){
@@ -499,7 +516,7 @@ loadMoreEmails = function(){
 }
 
 
-retrieveAndFillEmailBody = function (id, index){
+retrieveAndFillEmailBody = function (id, index, length){
 	gmail.messages.get({userId: 'me', id:id, format:'full'}).then(function(resp) {
 		console.log("messages.get");
 		console.log(resp);
@@ -521,6 +538,13 @@ retrieveAndFillEmailBody = function (id, index){
 		    	body_holder = document.getElementById('body_holder-' + index);
 		    	body_str.replace(/<a href="/g, '<a target="_blank" href="');
 				body_holder.innerHTML = body_str;
+				console.log("Compare");
+				console.log(index);
+				console.log(length);
+		    	if (index == length - 1){
+					body_holder.style.display = "block";		    			
+					body_holder.style.cursor = "none";
+		    	}
 		    }
 		    else{
 			    if (payload.mimeType == "multipart/alternative"){
@@ -535,6 +559,13 @@ retrieveAndFillEmailBody = function (id, index){
 		    		app.email_body = body_str;
 		    		body_holder = document.getElementById('body_holder-'+index);
 					body_holder.innerHTML = body_str;
+					console.log("Compare");
+					console.log(index);
+					console.log(length);
+		    		if (index == length - 1){
+						body_holder.style.display = "block";	    			
+						body_holder.style.cursor = "none";
+		    		}
 			    	
 			    	// body_str = atob(payload.parts[1].body.data);
 			    }
@@ -625,12 +656,16 @@ app.viewEmail = function(event){
 	 // Fetch only the emails in the user's inbox.
 	console.log(thread);
 
-	retrieveAndFillEmailBody(latest_id, length-1);
+	retrieveAndFillEmailBody(latest_id, length-1, length);
+	app.selectedThread.messages[length - 1].index = -1;
 
 	for (var i = 0; i < length - 1; i = i + 1){
 		console.log(i);
-		retrieveAndFillEmailBody(app.selectedThread.messages[i].id, i);
+		app.selectedThread.messages[i].index = i;
+		retrieveAndFillEmailBody(app.selectedThread.messages[i].id, i, length);
 	}	
+
+
 
 	 app.email_subject = app.selectedThread.subject;
 	 app.replyBody = "";

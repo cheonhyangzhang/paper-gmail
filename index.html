@@ -201,7 +201,7 @@
                                       </div>
                                       <template is="dom-repeat" items="{{selectedThread.messages}}">
                                             <div class="separator"></div>
-                                            <div class="card-content layout horizontal flex">
+                                            <div style="cursor:pointer;" on-click="toggleEmailBody" class="card-content layout horizontal flex">
                                                 <div class="layout vertical">
                                                     <template is="dom-if" if="{{_hasProfileImage(users, item.from.name)}}"> 
                                                     <iron-image class="avatar" src="{{users[item.from.name]}}"></iron-image>
@@ -230,7 +230,7 @@
                                             </div>
 
                                             <!-- <div id="body_holder-{{index}}"> -->
-                                            <div style="padding-left:40px;padding-right:20px;padding-bottom:20px;" id="{{_computeBodyId(index)}}">
+                                            <div style="display:none;padding-left:40px;padding-right:20px;padding-bottom:20px;" id="{{_computeBodyId(index)}}">
                                               <!-- content -->
                                             </div>
                                             
