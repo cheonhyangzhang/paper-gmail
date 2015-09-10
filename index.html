@@ -25,21 +25,7 @@
       <more-route-selector on-click="bodyClick">
             <iron-pages selected="{{route}}" class="fullbleed fit">
               <section route="login" >
-                  <div id="loginscreen" class="layout vertical center-center fit"
-                     class="{{ {show: !isAuthenticated} | tokenList }}">
-                  <div>
-                    <img style="padding:20px;" src="images/gmail.png" width="150" ></img>
-                    <img style="padding:20px;" src="images/polymer.svg" width="150"></img>
-                  </div>
-                  <div style="padding:20px;font-size:20px;">
-                    A Material Desgin Gmail Web Application using Polymer 
-                  </div>
-                  <google-signin width="wide" height="tall"
-                      client-id="734681955886-tfnfanpm9kqt60lvjrjqj9mc6emv80qa.apps.googleusercontent.com"
-                      scopes="profile email https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.compose https://mail.google.com/"
-                      on-google-signin-success="onSigninSuccess"
-                      on-google-signin-failure="onSigninFailure"></google-signin>
-                  </div>
+                <pg-login></pg-login>
               </section>
               <section route="inbox" class="layout vertical fit">
                     <paper-dialog style="position:fixed;top:60px;right:10px;width:90%;height:80%;" id="newEmail" entry-animation="scale-up-animation"

@@ -1,0 +1,95 @@
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<dom-module id="pg-login">
+  <style>
+    :host {
+      display: block;
+    }
+  </style>
+  <template>
+    <div id="loginscreen" class="layout vertical center-center fit"
+                     class="{{ {show: !isAuthenticated} | tokenList }}">
+    <div>
+      <img style="padding:20px;" src="../images/gmail.png" width="150" ></img>
+      <img style="padding:20px;" src="../images/polymer.svg" width="150"></img>
+    </div>
+    <div style="padding:20px;font-size:20px;">
+      A Material Desgin Gmail Web Application using Polymer 
+    </div>
+    <google-signin id="login-button" width="wide" height="tall"
+        client-id="734681955886-tfnfanpm9kqt60lvjrjqj9mc6emv80qa.apps.googleusercontent.com"
+        scopes="profile email https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.compose https://mail.google.com/"
+        on-google-signin-success="onSigninSuccess"
+        on-google-signin-failure="onSigninFailure"></google-signin>
+    </div>
+  </template>
+</dom-module>
+<script>
+  (function() {
+    Polymer({
+      is: 'pg-login',
+      properties: {
+        greeting: {
+          type: String,
+          value: 'Welcome!',
+          notify: true
+        },
+        restaurant:String,
+        restaurantToAdd:String
+      },
+      onSigninFailure:function(e, detail, sender) {
+        console.log("onSigninFailure")
+      },
+      onSigninSuccess:function(e, detail, sender) {
+        console.log("onSigninSuccess");
+        // app.isAuthenticated = true;
+        // Cached data? We're already using it. Bomb out before making unnecessary requests.
+        if ((app.threads && app.users) || DEBUG) {
+          return;
+        }
+        this.gapi = e.detail.gapi;
+        gapi.client.load('gmail', 'v1').then(function() {
+          gmail = gapi.client.gmail.users;
+          gmail.labels.list({userId:'me'}).then(function(resp){
+              app.labels = resp.result.labels.sort(labelCompare);
+              refreshInbox();
+          },function(resp){
+              var login = document.querySelector('#login-button');
+              login.signOut();
+              console.log("logi8n buttong");
+              console.log(login);
+          }
+          );
+        });
+
+        gapi.client.load('plus', 'v1').then(function() {
+          gapi.client.plus.people.get({userId: 'me'}).then(function(resp) {
+            var img = resp.result.image && resp.result.image.url.replace(/(.+)\?sz=\d\d/, "$1?sz=" + PROFILE_IMAGE_SIZE);
+
+            app.user = {
+              name: resp.result.displayName,
+              email: resp.result.emails[0].value,
+              profile_image: img
+            };
+
+            var users = {};
+
+            getAllUserProfileImages(users, null, function(users) {
+              app.users = users;
+              app.users[app.user.name] = app.user.profile; // signed in user.
+            });
+
+            var current_url = window.location.href;
+            if (current_url.indexOf("#!/inbox") < 0){
+              window.location.replace(window.location.href + "#!/inbox");
+            }
+            
+          });//plus me
+
+          });//load plus
+
+      }//onSuccessLogin
+      
+      
+    });
+  })();
+</script>

@@ -14,7 +14,6 @@ function nowSearchTerm(){
 	yyyy = tomorrow_time.getFullYear();
 	var tommorow = yyyy +'/' + mm + '/' + dd;	
 	var q = 'after:'+today+" "+"before:"+ tommorow+" !is:chats in:inbox";
-	console.log(q);
 	return q;
 }
 
@@ -671,62 +670,7 @@ app.viewEmail = function(event){
 	 app.replyBody = "";
 }
 
-app.onSigninFailure = function(e, detail, sender) {
-	console.log("onSigninFailure")
-}
-app.onSigninSuccess = function(e, detail, sender) {
-	console.log("onSigninSuccess a");
-	// app.isAuthenticated = true;
-	// Cached data? We're already using it. Bomb out before making unnecessary requests.
-	if ((app.threads && app.users) || DEBUG) {
-	return;
-	}
-	this.gapi = e.detail.gapi;
-	gapi.client.load('gmail', 'v1').then(function() {
-		console.log("Loaded gmail")
-		gmail = gapi.client.gmail.users;
-		gmail.labels.list({userId:'me'}).then(function(resp){
-			// console.log("list labels");
-			// console.log(resp);
 
-			app.labels = resp.result.labels.sort(labelCompare);
-		});
-		refreshInbox();
-	});
 
-	gapi.client.load('plus', 'v1').then(function() {
-		gapi.client.plus.people.get({userId: 'me'}).then(function(resp) {
-
-		  var img = resp.result.image && resp.result.image.url.replace(/(.+)\?sz=\d\d/, "$1?sz=" + PROFILE_IMAGE_SIZE);
-
-		  app.user = {
-		    name: resp.result.displayName,
-		    email: resp.result.emails[0].value,
-		    profile_image: img
-		  };
-
-		  var users = {};
-
-		  getAllUserProfileImages(users, null, function(users) {
-		  	// console.log("getAllUserProfileImages");
-		    app.users = users;
-		  	// console.log(app.users);
-		    app.users[app.user.name] = app.user.profile; // signed in user.
-		    // console.log(app.users);
-		  });
-
-		  console.log("redirect");
-		  // console.log(window.location.origin);
-		  // console.log(window.location.href);
-		  // console.log(window.location);
-		  var current_url = window.location.href;
-		  if (current_url.indexOf("#!/inbox") < 0){
-			  window.location.replace(window.location.href + "#!/inbox");
-		  }
-		});//plus me
-
-  	});//load plus
-
-};//onSuccessLogin
 
 
