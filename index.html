@@ -83,7 +83,10 @@
                                   </div>
                           </paper-menu>
                           <paper-header-panel  main class="flex fit layout vertical" mode="seamed"> 
-                                <iron-pages selected="{{main_page}}" class="layout vertical flex fit">
+                                <neon-animated-pages selected="{{main_page}}" class="layout vertical flex fit" 
+                                entry-animation="fade-in-animation"
+                                exit-animation="fade-out-animation"
+                                >
                                   <section style="width:95%;margin-left:auto;margin-right:auto;margin-top:20px;margin-bottom:20px;" >
                                       <template is="dom-if" if="{{alldone}}">
                                       <div class="layout vertical" style="width:300px;margin-left:auto;margin-right:auto;">
@@ -254,7 +257,7 @@
                                       </div>
                                     </paper-card>
                                   </section>
-                                </iron-pages>
+                                </neon-animated-pages>
                          
                           </paper-header-panel>
                       </paper-drawer-panel>

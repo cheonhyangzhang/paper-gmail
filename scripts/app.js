@@ -29,6 +29,7 @@ function labelCompare(a,b) {
 }
 
 var app = document.querySelector('#app');
+app.threadsEmailsToggle = {};
 app.back_content = "TODAY";
 app.labels_opened = true;
 app.alldone = false;
@@ -344,10 +345,13 @@ app.toggleEmailBody = function(e){
 	var body_holder = document.getElementById('body_holder-'+index);
 	console.log(body_holder);
 	if (typeof(body_holder) != 'undefined' && body_holder != null){
+		var body_id = app.selectedThread.id + '-body_holder-'+index;
 		if (body_holder.style.display == "none"){
+			app.threadsEmailsToggle[body_id] = 'block';
 			body_holder.style.display = "block";
 		}
 		else{
+			app.threadsEmailsToggle[body_id] = 'none';
 			body_holder.style.display = "none";
 		}
 	}
@@ -544,6 +548,15 @@ retrieveAndFillEmailBody = function (id, index, length){
 					body_holder.style.display = "block";		    			
 					body_holder.style.cursor = "none";
 		    	}
+		    	else{
+		    		var body_id = app.selectedThread.id + '-body_holder-' + index;
+		    		if (body_id in app.threadsEmailsToggle){
+		    			body_holder.style.display = app.threadsEmailsToggle[body_id];
+		    		}
+		    		else{
+		    			body_holder.style.display = "none"; 
+		    		}
+		    	}
 		    }
 		    else{
 			    if (payload.mimeType == "multipart/alternative"){
@@ -564,6 +577,15 @@ retrieveAndFillEmailBody = function (id, index, length){
 		    		if (index == length - 1){
 						body_holder.style.display = "block";	    			
 						body_holder.style.cursor = "none";
+		    		}
+		    		else{
+		    			var body_id = app.selectedThread.id + '-body_holder-' + index;
+		    			if (body_id in app.threadsEmailsToggle){
+		    				body_holder.style.display = app.threadsEmailsToggle[body_id];
+		    			}
+		    			else{
+		    				body_holder.style.display = "none"; 
+		    			}
 		    		}
 			    	
 			    	// body_str = atob(payload.parts[1].body.data);
