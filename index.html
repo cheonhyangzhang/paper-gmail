@@ -22,8 +22,7 @@
                 <pg-login></pg-login>
               </section>
               <section route="inbox" class="layout vertical fit">
-                    <paper-dialog style="position:fixed;top:60px;right:10px;width:90%;height:80%;" id="newEmail" entry-animation="scale-up-animation"
-                                  exit-animation="fade-out-animation">
+                    <paper-dialog style="position:fixed;top:60px;right:10px;width:90%;height:80%;" id="newEmail" >
                       <paper-tags-input label="To" placeholder="Add a recipient" tags="{{draftTo}}">
                       </paper-tags-input>
 
@@ -74,8 +73,6 @@
                           </paper-menu>
                           <paper-header-panel  main class="flex fit layout vertical" mode="seamed"> 
                                 <neon-animated-pages selected="{{main_page}}" class="layout vertical flex fit" 
-                                entry-animation="fade-in-animation"
-                                exit-animation="fade-out-animation"
                                 >
                                   <pg-inbox style="width:95%;margin-left:auto;margin-right:auto;margin-top:20px;margin-bottom:20px;" 
                                         threads="{{threads}}"
