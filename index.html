@@ -72,9 +72,16 @@
                                   </div>
                           </paper-menu>
                           <paper-header-panel  main class="flex fit layout vertical" mode="seamed"> 
+                                <template is="dom-if" if="{{loading}}">
+                                  <div style="margin-top:20px;width:50px;margin-left:auto;margin-right:auto;">
+                                    <paper-spinner active></paper-spinner>
+                                  </div>
+                                </template>
+
                                 <neon-animated-pages selected="{{main_page}}" class="layout vertical flex fit" 
                                 >
-                                  <pg-inbox style="width:95%;margin-left:auto;margin-right:auto;margin-top:20px;margin-bottom:20px;" 
+                                   
+                                    <pg-inbox style="width:95%;margin-left:auto;margin-right:auto;margin-top:20px;margin-bottom:20px;" 
                                         threads="{{threads}}"
                                         alldone="{{alldone}}"
                                         bottom-loading="{{bottomLoading}}"

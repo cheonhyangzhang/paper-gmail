@@ -35,7 +35,7 @@ app.labels_opened = true;
 app.alldone = false;
 app.heading = 'TODAY';
 app.loading = false;
-app.bottom_loading = false;
+app.bottomLoading = false;
 app.page = 'login';
 app.main_page = 0;
 app.threads = [];
@@ -264,7 +264,7 @@ loadThreads = function(threads, checkNew){
 		}
 		app.threads = app.threads.concat(threads);
 		app.loading = false;
-		app.bottom_loading = false;
+		app.bottomLoading = false;
 		// console.log(threads);
 	}	
 }
@@ -378,6 +378,7 @@ autoRefresh();
 //refreshInbox fields
 refreshInbox = function(checkNew) {
 	app.main_page = 0;
+	app.showMoreButton = false;
 	console.log("refreshInbox");
 	app.loading = true;
   	// var q = 'in:inbox';
@@ -413,7 +414,7 @@ loadMoreEmails = function(){
 		document.querySelector('#nomoreemails').show();
 	}
 	else{
-		app.bottom_loading = true;
+		app.bottomLoading = true;
 	  	var q = app.list_q;
 	  	app.fetchMail(q);
 	}
