@@ -102,10 +102,7 @@ app.bodyClick = function(){
 app.showNewEmail = function(e){
 	console.log("showNewEmail");
 	var dialog = document.querySelector('#newEmail')
-	console.log(dialog);
 	if (dialog != null){
-		console.log("dialog open");
-		// document.querySelector('#labels_list').open();
 		dialog.open();
 
 	}
