@@ -30,7 +30,10 @@ moveEmailTo = function(threadid, labelid, labelname ){
 		console.log(resp);	
 		document.querySelector('#labels_list').close();
 		app.main_page = 0;
-		document.querySelector('#emailMoved').show();
+		var toast = document.querySelector('#emailMoved');
+		toast.text = "Moved to " + app.movetofolder;
+		toast.show();
+		// document.querySelector('#emailMoved').show();
 		app.threads.splice(app.selectedThreadId, 1);
 		app.threads = app.threads.slice();
 		checkAlldone();

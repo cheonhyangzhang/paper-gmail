@@ -1,0 +1,255 @@
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<dom-module id="pg-email-body">
+  <style>
+    :host {
+      display: block;
+    }
+  </style>
+  <template>
+      <paper-dialog style="position:fixed;top:74px;right:8px;" id="labels_list" >
+          <paper-menu>
+           <template is="dom-repeat" items="{{labels}}">
+            <template is="dom-if" if="{{_isUserLable(item)}}">
+            <paper-item class="menu-item" on-click="appMoveEmailTo">
+                <span>{{item.name}}</span>
+            </paper-item>
+            </template>
+          </template>
+          </paper-menu>
+        </paper-dialog>
+
+
+        <paper-card class="layout horizontal flex">
+          <div class="layout horizontal flex">
+            <paper-button onclick="goback()">
+              <iron-icon icon="arrow-back" class="icon-with-text"></iron-icon>
+            </paper-button>
+            <div class="flex">
+            </div>
+
+            <paper-button on-click="appArchiveEmail" >
+              <iron-icon icon="archive"></iron-icon>
+            </paper-button>
+            <paper-button on-click="appTrashEmail">
+              <iron-icon icon="delete"></iron-icon>
+            </paper-button>
+            <paper-button on-tap="showLabels">
+              <iron-icon icon="folder"></iron-icon>
+            </paper-button>
+
+          </div>
+          <div class="separator"></div>
+          <div style="padding:15px;">
+            <b><span>{{selectedThread.subject}}</span></b> 
+          </div>
+          <template is="dom-repeat" items="{{selectedThread.messages}}">
+                <div class="separator"></div>
+                <div style="cursor:pointer;" on-click="toggleEmailBody" class="card-content layout horizontal flex">
+                    <div class="layout vertical">
+                        <template is="dom-if" if="{{_hasProfileImage(item.from.name)}}"> 
+                        <iron-image class="avatar" src="{{users[item.from.name]}}"></iron-image>
+                      </template>
+                      <template is="dom-if" if="{{!_hasProfileImage(item.from.name)}}">
+                        <div class="avatar">
+                          <span style$="{{_computeProfileColor(item.from.initial_color)}}" class="letter layout horizontal center-center">{{item.from.initial}}</span>
+                        </div>
+                      </template>
+                    </div>
+
+                    <div class="layout vertical flex">
+                      <div class="layout horizontal ">
+                        <span >{{item.from.name}}</span><span style="margin-left:10px;color:#afafaf;">{{item.from.email}}</span>
+                        <div class="flex">
+                        </div>
+                        <div>
+                        <span>{{item.time}}</span> <span>{{item.date}}</span>
+                        </div>
+                      </div>
+                      <div class="layout horizontal ">
+                        <span style="color:#afafaf;">to</span> <span style="margin-left:10px;color:#afafaf;">{{_abstractEmailsFromToToString(item.to)}}</span> 
+                      </div>
+                    </div>
+
+                </div>
+
+                <!-- <div id="body_holder-{{index}}"> -->
+                <div style="display:none;padding-left:40px;padding-right:20px;padding-bottom:20px;" id="{{_computeBodyId(index)}}">
+                  <!-- content -->
+                </div>
+                
+
+          </template>
+          </div>
+          <!-- <div class="card-actions"> -->
+            <!-- <paper-button>Some action</paper-button> -->
+          <!-- </div> -->
+        </paper-card>
+        <paper-card class="layout horizontal flex">
+          <div class="card-content layout horizontal flex">
+            <iron-image class="avatar" src="{{user.profile_image}}"></iron-image>
+            <div class="layout vertical flex">
+              <div class="layout horizontal">
+                <span class="flex" style="color:#a5a5a5;">Reply To</span> 
+                <paper-button on-tap="replyAllToEmail">Reply All</paper-button>
+                <paper-button on-tap="replyToEmail">Reply</paper-button>
+                <!-- <paper-button>Forward</paper-button> -->
+              </div>
+              <div >
+                <paper-tags-input placeholder="Add a recipient" tags="{{replyToList}}"></paper-tags-input>
+              </div>
+              <div class="separator"></div> 
+              <div style="padding-top:20px;padding-bottom:20px;withd:100%;padding-left:22px;">
+                  <iron-autogrow-textarea style="width:100%;border:none;" bind-value="{{replyBody}}" placeholder="Say something"  id="reply-bodya" >
+                  </iron-autogrow-textarea>
+              </div>
+              <div>
+                <paper-button on-tap="replyEmail" >SEND</paper-button>
+                <paper-button on-tap="dropReply" >Drop</paper-button>
+              </div>
+            </div>
+          
+          </div>
+        </paper-card>
+
+
+  </template>
+</dom-module>
+<script>
+  (function() {
+    Polymer({
+      is: 'pg-email-body',
+      properties: {
+        labels:Object,
+        selectedThread:Object,
+        replyToList:Object,
+        user:Object,
+        replyBody:String
+      },
+      _hasProfileImage:function(val){
+        return app._hasProfileImage(val);
+      },
+      _isUserLable:function(label){
+        return app._isUserLable(label);
+      },
+      _shouldShowMessagesLength:function(length){
+        if (length == 1){
+          return false;
+        }
+        else{
+          return true;
+        }
+      },
+      _computeProfileColor:function(color){
+        return "background-color:" + color + ";";
+      },
+      _abstractEmailsFromToToString:function(to){
+        return app._abstractEmailsFromToToString(to);
+      },
+      _computeBodyId:function(index){
+        return "body_holder-" + index;
+      },
+      showLabels:function(e){
+        // document.querySelector('#labels_list').open();
+        e.target.dropdown = document.querySelector('#labels_list');
+        e.target.dropdown.relatedTarget = e.target;
+        e.target.dropdown.open();
+      },
+      appMoveEmailTo:function(event){
+        console.log("appMoveEmailTo");
+        moveEmailTo(app.selectedThread.id,event.model.item.id,event.model.item.name);
+        var dropdown = document.querySelector('#labels_list');
+        dropdown.close();
+      },
+      appArchiveEmail:function(event){
+        console.log("appArchiveEmail");
+        archiveEmail(app.selectedThread.id);
+      },
+      appTrashEmail:function(event){
+        console.log("appTrashEmail");
+        trashEmail(app.selectedThread.id);
+      },
+      replyToEmail:function(){
+          app.replyToList = [app.replyTo];
+      },
+      replyAllToEmail:function(){
+        app.replyToList = app.replyAllTo;
+      },
+      toggleEmailBody:function(e){
+        var index = e.model.item.index;
+        console.log(index);
+        var body_holder = document.getElementById('body_holder-'+index);
+        console.log(body_holder);
+        if (typeof(body_holder) != 'undefined' && body_holder != null){
+          var body_id = app.selectedThread.id + '-body_holder-'+index;
+          if (body_holder.style.display == "none"){
+            app.threadsEmailsToggle[body_id] = 'block';
+            body_holder.style.display = "block";
+          }
+          else{
+            app.threadsEmailsToggle[body_id] = 'none';
+            body_holder.style.display = "none";
+          }
+        }
+      },
+      replyEmail:function(e){
+        console.log("replyEmil");
+        console.log(app.replyToList);
+        console.log(app.user.name);
+        console.log(app.user.email);
+        console.log(this.replyBody);
+        var pg_email_body = this;
+        if (typeof(app.replyToList) == 'undefined' || app.replyToList.length == 0){
+          document.querySelector('#emailNotSent').show();
+          return;
+        }
+        var mail = {  
+            // "to": "email1@example.com, email2@example.com",
+            "to": app.replyToList.join(","),
+            "subject":app.email_subject,
+            "fromName": app.user.name,
+            "from": app.user.email,
+            "body": this.replyBody
+            // "cids": [],
+            // "attaches" : []
+        }
+
+        var raw_email = createMimeMessage(mail);
+        var encoded_raw_email = Base64.encode(raw_email)
+        console.log(raw_email);
+        console.log(encoded_raw_email);
+        var replaced = encodeURL(encoded_raw_email);
+          var request = gapi.client.gmail.users.messages.send({
+              'userId': 'me',
+              'threadId': app.selectedThread.id,
+              'raw': replaced
+          });
+          request.execute(function(resp){
+            console.log("Send email resp:");
+            console.log(resp);
+            if (!resp.code){
+              pg_email_body.replyBody = "";
+              pg_email_body.replyToList = app.replyAllTo;
+              document.querySelector('#emailSent').show();
+            }
+            else{
+              document.querySelector('#emailNotSent').show();
+            }
+          });
+      },
+      deleteDraft:function(){
+          app.draftTo = [];
+          app.draftSubject = "";
+          app.draftBody = "";
+      },
+      closeNewEmail:function(){
+
+      },
+      dropReply:function(e){
+        this.replyBody = "";
+        this.replyToList = app.replyAllTo;
+      }
+      
+      
+    });
+  })();
+</script>

@@ -125,55 +125,8 @@ app.deleteDraft = function(e){
 	app.draftSubject = "";
 	app.draftBody = "";
 }
-app.dropReply = function(e){
-	app.replyBody = "";
-	app.replyToList = app.replyAllTo;
-}
-app.replyEmail = function(e){
-	console.log("replyEmil");
-	console.log(app.replyToList);
-	console.log(app.user.name);
-	console.log(app.user.email);
-	console.log(app.replyBody);
-	if (typeof(app.replyToList) == 'undefined' || app.replyToList.length == 0){
-		document.querySelector('#emailNotSent').show();
-		return;
-	}
-	var mail = {  
-	    // "to": "email1@example.com, email2@example.com",
-	    "to": app.replyToList.join(","),
-	    "subject":app.email_subject,
-	    "fromName": app.user.name,
-	    "from": app.user.email,
-	    "body": app.replyBody
-	    // "cids": [],
-    	// "attaches" : []
-	}
 
-	var raw_email = createMimeMessage(mail);
-	var encoded_raw_email = Base64.encode(raw_email)
-	console.log(raw_email);
-	console.log(encoded_raw_email);
-	var replaced = encodeURL(encoded_raw_email);
-  	var request = gapi.client.gmail.users.messages.send({
-    	'userId': 'me',
-    	'threadId': app.selectedThread.id,
-      	'raw': replaced
-  	});
-  	request.execute(function(resp){
-  		console.log("Send email resp:");
-  		console.log(resp);
-  		if (!resp.code){
-  			app.deleteDraft();	
-  			app.closeNewEmail();
-  			document.querySelector('#emailSent').show();
 
-  		}
-  		else{
-  			document.querySelector('#emailNotSent').show();
-  		}
-  	});
-}
 app.sendEmail = function(e){
 	console.log("sending email");
 	console.log(app.draftTo);
@@ -222,12 +175,7 @@ app.sendEmail = function(e){
 
 var FROM_HEADER_REGEX = new RegExp(/"?(.*?)"?\s?<(.*)>/);
 
-app.showLabels = function(e){
-	// document.querySelector('#labels_list').open();
-	e.target.dropdown = document.querySelector('#labels_list');
-	e.target.dropdown.relatedTarget = e.target;
-	e.target.dropdown.open();
-}
+
 
 
 app.searchpressed = function(e){
@@ -324,43 +272,13 @@ loadThreads = function(threads, checkNew){
 	}	
 }
 
-app.toggleEmailBody = function(e){
-	console.log("toggleEmailBody");
-	var index = e.model.item.index;
-	console.log(index);
-	var body_holder = document.getElementById('body_holder-'+index);
-	console.log(body_holder);
-	if (typeof(body_holder) != 'undefined' && body_holder != null){
-		var body_id = app.selectedThread.id + '-body_holder-'+index;
-		if (body_holder.style.display == "none"){
-			app.threadsEmailsToggle[body_id] = 'block';
-			body_holder.style.display = "block";
-		}
-		else{
-			app.threadsEmailsToggle[body_id] = 'none';
-			body_holder.style.display = "none";
-		}
-	}
-}
+
 // app._computeBodyHeaderId = function(index){
 	// return "body_header-" + index;
 // }
-app._computeBodyId = function(index){
-	return "body_holder-" + index;
-}
-app.appMoveEmailTo = function(event){
-	console.log("appMoveEmailTo");
-	moveEmailTo(app.selectedThread.id,event.model.item.id,event.model.item.name);
-	$('#labels_list').close();
-}
-app.appArchiveEmail = function(event){
-	console.log("appArchiveEmail");
-	archiveEmail(app.selectedThread.id);
-}
-app.appTrashEmail = function(event){
-	console.log("appTrashEmail");
-	trashEmail(app.selectedThread.id);
-}
+
+
+
 app.appUntrashEmail = function(event){
 	console.log("appUntrashEmail");
 	untrashEmail();
@@ -598,12 +516,7 @@ app.replyAllTo = [];
 app.replyToList = [];
 app.replyTo = "";
 app.replyToSubject = "";
-app.replyToEmail = function(){
-	app.replyToList = [app.replyTo];
-}
-app.replyAllToEmail = function(){
-	app.replyToList = app.replyAllTo;
-}
+
 app.populateReplyTo = function(thread){
 	console.log("populateReplyTo");
 	console.log(thread);
@@ -629,7 +542,7 @@ app.populateReplyTo = function(thread){
 	console.log("After removal");
 	console.log(tos_list);
 	console.log(app.replyTo);
-	if (app.replyTo)
+	// if (app.replyTo)
 	tos_list.push(app.replyTo);
 	console.log(tos_list);
 	app.replyAllTo = tos_list;
@@ -637,7 +550,8 @@ app.populateReplyTo = function(thread){
 
 }
 ,
-app._hasProfileImage = function(dict, val){
+app._hasProfileImage = function(val){
+	// app.users;
 	//todo
 	//need to find a way to determine if shows the avatar
 	//need to wait getAllUsers finish

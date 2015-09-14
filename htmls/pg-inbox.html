@@ -56,7 +56,7 @@
           <!-- </div> -->
         </template>
         
-      <template is="dom-if" if="{{bottom_loading}}">
+      <template is="dom-if" if="{{bottomLoading}}">
           <div style="width:50px;margin-top:10px;margin-bottom:10px;margin-left:auto;margin-right:auto;">
           <paper-spinner active></paper-spinner>
           </div>
@@ -77,7 +77,9 @@
       is: 'pg-inbox',
       properties: {
         alldone:Boolean,
-        threads:Object
+        threads:Object,
+        bottomLoading:Boolean,
+        showMoreButton:Boolean
       },
       _hasProfileImage:function(dict, val){
         return app._hasProfileImage(dict,val);

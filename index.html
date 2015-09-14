@@ -1,23 +1,17 @@
 <!-- Author: Tianxiang Zhang <cenhiangapply@gmail.com> -->
 <!DOCTYPE html>
 <html>
-
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1">
     <title>Paper Gmail</title>
-
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-
     <link rel="shortcut icon" href="images/gmail.ico">
-
     <link rel="import" href="htmls/elements.html">
     <link rel="import" href="htmls/route.html">
-
     <link rel="stylesheet" href="stylesheets/app.css">
-
   </head>
 
   <body class="fullbleed layout vertical" >
@@ -30,10 +24,6 @@
               <section route="inbox" class="layout vertical fit">
                     <paper-dialog style="position:fixed;top:60px;right:10px;width:90%;height:80%;" id="newEmail" entry-animation="scale-up-animation"
                                   exit-animation="fade-out-animation">
-           
-
-                      <!-- <paper-input label="To" value="{{draftTo}}"> -->
-                      <!-- </paper-input> -->
                       <paper-tags-input label="To" placeholder="Add a recipient" tags="{{draftTo}}">
                       </paper-tags-input>
 
@@ -87,118 +77,20 @@
                                 entry-animation="fade-in-animation"
                                 exit-animation="fade-out-animation"
                                 >
-                                      <pg-inbox style="width:95%;margin-left:auto;margin-right:auto;margin-top:20px;margin-bottom:20px;" 
+                                  <pg-inbox style="width:95%;margin-left:auto;margin-right:auto;margin-top:20px;margin-bottom:20px;" 
                                         threads="{{threads}}"
                                         alldone="{{alldone}}"
-                                      ></pg-inbox>
-
-                                 
-                                  <section style="width:95%;margin-left:auto;margin-right:auto;margin-top:20px;margin-bottom:40px;">
-                                    <paper-dialog style="position:fixed;top:74px;right:8px;" id="labels_list" >
-                                      <paper-menu>
-                                       <template is="dom-repeat" items="{{labels}}">
-                                        <template is="dom-if" if="{{_isUserLable(item)}}">
-                                        <paper-item class="menu-item" on-click="appMoveEmailTo">
-                                            <span>{{item.name}}</span>
-                                        </paper-item>
-                                        </template>
-                                      </template>
-                                      </paper-menu>
-                                    </paper-dialog>
-
-
-                                    <paper-card class="layout horizontal flex">
-                                      <div class="layout horizontal flex">
-                                        <paper-button onclick="goback()">
-                                          <iron-icon icon="arrow-back" class="icon-with-text"></iron-icon>
-                                        </paper-button>
-                                        <div class="flex">
-                                        </div>
-
-                                        <paper-button on-click="appArchiveEmail" >
-                                          <iron-icon icon="archive"></iron-icon>
-                                        </paper-button>
-                                        <paper-button on-click="appTrashEmail">
-                                          <iron-icon icon="delete"></iron-icon>
-                                        </paper-button>
-                                        <paper-button on-tap="showLabels">
-                                          <iron-icon icon="folder"></iron-icon>
-                                        </paper-button>
-                        
-                                      </div>
-                                      <div class="separator"></div>
-                                      <div style="padding:15px;">
-                                        <b><span>{{email_subject}}</span></b> 
-                                      </div>
-                                      <template is="dom-repeat" items="{{selectedThread.messages}}">
-                                            <div class="separator"></div>
-                                            <div style="cursor:pointer;" on-click="toggleEmailBody" class="card-content layout horizontal flex">
-                                                <div class="layout vertical">
-                                                    <template is="dom-if" if="{{_hasProfileImage(users, item.from.name)}}"> 
-                                                    <iron-image class="avatar" src="{{users[item.from.name]}}"></iron-image>
-                                                  </template>
-                                                  <template is="dom-if" if="{{!_hasProfileImage(users, item.from.name)}}">
-                                                    <div class="avatar">
-                                                      <span style$="{{_computeProfileColor(item.from.initial_color)}}" class="letter layout horizontal center-center">{{item.from.initial}}</span>
-                                                    </div>
-                                                  </template>
-                                                </div>
-
-                                                <div class="layout vertical flex">
-                                                  <div class="layout horizontal ">
-                                                    <span >{{item.from.name}}</span><span style="margin-left:10px;color:#afafaf;">{{item.from.email}}</span>
-                                                    <div class="flex">
-                                                    </div>
-                                                    <div>
-                                                    <span>{{item.time}}</span> <span>{{item.date}}</span>
-                                                    </div>
-                                                  </div>
-                                                  <div class="layout horizontal ">
-                                                    <span style="color:#afafaf;">to</span> <span style="margin-left:10px;color:#afafaf;">{{_abstractEmailsFromToToString(item.to)}}</span> 
-                                                  </div>
-                                                </div>
-
-                                            </div>
-
-                                            <!-- <div id="body_holder-{{index}}"> -->
-                                            <div style="display:none;padding-left:40px;padding-right:20px;padding-bottom:20px;" id="{{_computeBodyId(index)}}">
-                                              <!-- content -->
-                                            </div>
-                                            
-
-                                      </template>
-                                      </div>
-                                      <!-- <div class="card-actions"> -->
-                                        <!-- <paper-button>Some action</paper-button> -->
-                                      <!-- </div> -->
-                                    </paper-card>
-                                    <paper-card class="layout horizontal flex">
-                                      <div class="card-content layout horizontal flex">
-                                        <iron-image class="avatar" src="{{user.profile_image}}"></iron-image>
-                                        <div class="layout vertical flex">
-                                          <div class="layout horizontal">
-                                            <span class="flex" style="color:#a5a5a5;">Reply To</span> 
-                                            <paper-button on-tap="replyAllToEmail">Reply All</paper-button>
-                                            <paper-button on-tap="replyToEmail">Reply</paper-button>
-                                            <!-- <paper-button>Forward</paper-button> -->
-                                          </div>
-                                          <div >
-                                            <paper-tags-input placeholder="Add a recipient" tags="{{replyToList}}"></paper-tags-input>
-                                          </div>
-                                          <div class="separator"></div> 
-                                          <div style="padding-top:20px;padding-bottom:20px;withd:100%;padding-left:22px;">
-                                              <iron-autogrow-textarea style="width:100%;border:none;" bind-value="{{replyBody}}" placeholder="Say something"  id="reply-bodya" >
-                                              </iron-autogrow-textarea>
-                                          </div>
-                                          <div>
-                                            <paper-button on-tap="replyEmail" >SEND</paper-button>
-                                            <paper-button on-tap="dropReply" >Drop</paper-button>
-                                          </div>
-                                        </div>
-                                      
-                                      </div>
-                                    </paper-card>
-                                  </section>
+                                        bottom-loading="{{bottomLoading}}"
+                                        show-more-button="{{showMoreButton}}"
+                                  ></pg-inbox>
+                                    <pg-email-body 
+                                    style="width:95%;margin-left:auto;margin-right:auto;margin-top:20px;margin-bottom:40px;"
+                                    user="{{user}}"
+                                    labels="{{labels}}"
+                                    selected-thread="{{selectedThread}}"
+                                    reply-to-list="{{replyToList}}"
+                                    >
+                                    </pg-email-body>
                                 </neon-animated-pages>
                          
                           </paper-header-panel>
