@@ -1,0 +1,141 @@
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<dom-module id="pg-inbox">
+  <style>
+    :host {
+      display: block;
+    }
+  </style>
+  <template>
+      <template is="dom-if" if="{{alldone}}">
+        <div class="layout vertical" style="width:300px;margin-left:auto;margin-right:auto;">
+          <img width="80" style="margin-left:auto;margin-right:auto;" src="../images/noemails.png">
+          </img>
+          <span center> Hooray ! You have done all your emails.</span>
+        </div>
+        </template>
+
+        <template is="dom-if" if="{{loading}}">
+          <div style="width:50px;margin-left:auto;margin-right:auto;">
+          <paper-spinner active></paper-spinner>
+          </div>
+        </template>
+       
+        <template is="dom-repeat" items="{{threads}}">
+            <!-- <div class="thread-card layout horizontal" > -->
+            <paper-card style="margin-bottom:1px;" class="layout horizontal flex">
+             <div class="card-content layout horizontal flex">
+              <div class="layout vertical">
+                <template is="dom-if" if="{{_hasProfileImage(users, item.from.name)}}"> 
+                  <iron-image class="avatar" src="{{users[item.from.name]}}"></iron-image>
+                </template>
+                <template is="dom-if" if="{{!_hasProfileImage(item.from.name)}}">
+                  <div class="avatar">
+                    <span style$="{{_computeProfileColor(item.from.initial_color)}}" class="letter layout horizontal center-center" >{{item.from.initial}}</span>
+                  </div>
+                </template>
+              </div>
+              <!-- <div onclick="viewEmail()"  class="layout vertical flex" style="cursor:pointer;" > -->
+              <div on-tap="viewEmail"  class="layout vertical flex" style="cursor:pointer;" >
+                <!-- onclick="viewEmail({{index}})" -->
+                <div style="display:none;">{{index}}</div>
+                <div  class="layout horizontal">
+                  <span class="thread-name">{{item.from.name}}</span>
+
+                  <!-- <span class="flex">{{_threadMessages(item.messages.length)}}</span> -->
+
+                  <template is="dom-if" if="{{_shouldShowMessagesLength(item.messages.length)}}">
+                  <span class="thread-length" >(<span>{{item.messages.length}}</span>)</span>
+                  </template>
+                  <span class="flex"></span>
+                  <span class="thread-time">{{item.time}}</span><span class="thread-time">-</span><span class="thread-time">{{item.date}}</span></div>
+                <div class="thread-subject">{{item.subject}}</div>
+                <div style="padding-bottom:5px;font-size:10px;">{{item.snippet}}</div>
+              </div>
+            </div>
+          </paper-card>
+          <!-- </div> -->
+        </template>
+        
+      <template is="dom-if" if="{{bottom_loading}}">
+          <div style="width:50px;margin-top:10px;margin-bottom:10px;margin-left:auto;margin-right:auto;">
+          <paper-spinner active></paper-spinner>
+          </div>
+      </template>
+      <template is="dom-if" if="{{showMoreButton}}">
+          <div style="width:100px;margin-left:auto;margin-right:auto;">
+            <paper-button class="more-button" horizontal center-justified layout raised onclick="loadMoreEmails()"> More ...</paper-button>
+          </div> 
+      </template>
+
+
+
+  </template>
+</dom-module>
+<script>
+  (function() {
+    Polymer({
+      is: 'pg-inbox',
+      properties: {
+        alldone:Boolean,
+        threads:Object
+      },
+      _hasProfileImage:function(dict, val){
+        return app._hasProfileImage(dict,val);
+      },
+      _shouldShowMessagesLength:function(length){
+        if (length == 1){
+          return false;
+        }
+        else{
+          return true;
+        }
+      },
+      _computeProfileColor:function(color){
+        return "background-color:" + color + ";";
+      },
+      viewEmail:function(event){
+        console.log("viewEmail");
+        console.log(event);
+        var index = event.model.index;
+        console.log(index);
+        // console.log(detail);
+        // console.log(sender);
+        app.main_page = 1;
+        app.selectedThread = $.extend({},app.threads[index]);
+
+        app.populateReplyTo(app.selectedThread);
+        app.selectedThreadFromName = app.selectedThread.messages[0].from.name;
+        app.selectedThreadFromEmail = app.selectedThread.messages[0].from.email;
+
+        app.selectedThreadId = index;
+
+        console.log("app.selectedThread");
+        console.log(app.selectedThread);
+        var length = app.selectedThread.messages.length;
+
+        app.selectedemail = index;
+        console.log("viewEmail : ");
+        var thread = app.threads[index];
+        var latest_id = thread.messages[length-1].id;
+         // Fetch only the emails in the user's inbox.
+        console.log(thread);
+
+        retrieveAndFillEmailBody(latest_id, length-1, length);
+        app.selectedThread.messages[length - 1].index = -1;
+
+        for (var i = 0; i < length - 1; i = i + 1){
+          console.log(i);
+          app.selectedThread.messages[i].index = i;
+          retrieveAndFillEmailBody(app.selectedThread.messages[i].id, i, length);
+        } 
+
+
+
+         app.email_subject = app.selectedThread.subject;
+         app.replyBody = "";
+      }
+      
+      
+    });
+  })();
+</script>

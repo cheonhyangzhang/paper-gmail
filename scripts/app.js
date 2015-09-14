@@ -72,14 +72,7 @@ var labels_search = {
 	'DRAFTS':'label:drafts !is:chats',
 	'SENT':'label:sent !is:chats'
 }
-app._shouldShowMessagesLength = function(length){
-	if (length == 1){
-		return false;
-	}
-	else{
-		return true;
-	}
-}
+
 app._abstractEmailsFromTo = function(to){
 	var tos_list = to.split(',')
 	for (var i = 0; i < tos_list.length; i ++){
@@ -99,15 +92,8 @@ app._isUserLable = function(label){
 		return false;
 	}
 }
-app._computeProfileColor = function(color){
-	return "background-color:" + color + ";";
-}
-app._hasProfileImage = function(dict, val){
-	//todo
-	//need to find a way to determine if shows the avatar
-	//need to wait getAllUsers finish
-	return false;
-}
+
+
 app.bodyClick = function(){
 	if (app.searching == true){
 		app.searching = false;
@@ -650,46 +636,12 @@ app.populateReplyTo = function(thread){
 	app.replyToList = app.replyAllTo;
 
 }
-app.viewEmail = function(event){
-	console.log("viewEmail");
-	console.log(event);
-	var index = event.model.index;
-	console.log(index);
-	// console.log(detail);
-	// console.log(sender);
-	app.main_page = 1;
-	app.selectedThread = $.extend({},app.threads[index]);
-
-	app.populateReplyTo(app.selectedThread);
-	app.selectedThreadFromName = app.selectedThread.messages[0].from.name;
-	app.selectedThreadFromEmail = app.selectedThread.messages[0].from.email;
-
-	app.selectedThreadId = index;
-
-	console.log("app.selectedThread");
-	console.log(app.selectedThread);
-	var length = app.selectedThread.messages.length;
-
-	app.selectedemail = index;
-	console.log("viewEmail : ");
-	var thread = app.threads[index];
-	var latest_id = thread.messages[length-1].id;
-	 // Fetch only the emails in the user's inbox.
-	console.log(thread);
-
-	retrieveAndFillEmailBody(latest_id, length-1, length);
-	app.selectedThread.messages[length - 1].index = -1;
-
-	for (var i = 0; i < length - 1; i = i + 1){
-		console.log(i);
-		app.selectedThread.messages[i].index = i;
-		retrieveAndFillEmailBody(app.selectedThread.messages[i].id, i, length);
-	}	
-
-
-
-	 app.email_subject = app.selectedThread.subject;
-	 app.replyBody = "";
+,
+app._hasProfileImage = function(dict, val){
+	//todo
+	//need to find a way to determine if shows the avatar
+	//need to wait getAllUsers finish
+	return false;
 }
 
 
