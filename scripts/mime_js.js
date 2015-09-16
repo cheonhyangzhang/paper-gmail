@@ -18,14 +18,14 @@
       if (textContent == null) {
         textContent = '';
       }
-      return '\nContent-Type: text/plain; charset=UTF-8' + '\nContent-Transfer-Encoding: base64' + '\n\n' + (Base64.encode(textContent, true)).replace(/.{76}/g, "$&\n");
+      return '\nContent-Type: text/plain; charset=UTF-8' + '\nContent-Transfer-Encoding: base64' + '\n\n' + (Base64.encode(textContent)).replace(/.{76}/g, "$&\n");
     };
     createHtml = function(msg) {
       var htmlContent;
       htmlContent = msg.body || "";
       htmlContent = htmlContent.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/, '&gt;').replace(/\n/g, '\n<br/>');
       htmlContent = '<div>' + htmlContent + '</div>';
-      return '\nContent-Type: text/html; charset=UTF-8' + '\nContent-Transfer-Encoding: base64' + '\n\n' + (Base64.encode(htmlContent, true)).replace(/.{76}/g, "$&\n");
+      return '\nContent-Type: text/html; charset=UTF-8' + '\nContent-Transfer-Encoding: base64' + '\n\n' + (Base64.encode(htmlContent)).replace(/.{76}/g, "$&\n");
     };
     createAlternative = function(text, html) {
       var boundary;
@@ -100,7 +100,9 @@
     };
     try {
       plain = createPlain(mail.body);
+
       htm = createHtml(mail);
+
       alternative = createAlternative(plain, htm);
       cids = createCids(mail.cids);
       related = createRelated(alternative, cids);
