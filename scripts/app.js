@@ -448,7 +448,7 @@ retrieveAndFillEmailBody = function (id, index, length){
 				console.log(length);
 		    	if (index == length - 1){
 					body_holder.style.display = "block";		    			
-					body_holder.style.cursor = "none";
+					// body_holder.style.cursor = "none";
 		    	}
 		    	else{
 		    		var body_id = app.selectedThread.id + '-body_holder-' + index;
@@ -478,7 +478,7 @@ retrieveAndFillEmailBody = function (id, index, length){
 					console.log(length);
 		    		if (index == length - 1){
 						body_holder.style.display = "block";	    			
-						body_holder.style.cursor = "none";
+						// body_holder.style.cursor = "none";
 		    		}
 		    		else{
 		    			var body_id = app.selectedThread.id + '-body_holder-' + index;
