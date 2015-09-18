@@ -81,7 +81,7 @@ app._parseHeading = function(heading){
 }
 
 app._refreshSelectedThread = function(){
-	console.log("app._refreshSelectedThread");
+	console.log("app._refreshSelectedThreadi !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	console.log(app.selectedThread);
 	var request = gapi.client.gmail.users.threads.get({
     	'userId': 'me',
@@ -89,9 +89,12 @@ app._refreshSelectedThread = function(){
   	});
   	request.execute(function(resp){
   		console.log("get new thread resp:");
-  		console.log(resp);
-  		app.selectedThread = resp.result;
-  		app.selectedThread.messages = processMessage(resp);
+  		var newThread = resp.result;
+  		// app.selectedThread = resp.result;
+  		newThread.messages = processMessage(resp);
+  		app._populateThread(newThread);
+  		console.log(newThread);
+  		app.selectedThread = newThread;
   		app.threads[app.selectedThreadId] = app.selectedThread;
   		if (!resp.code){
   			var thread = app.selectedThread;
@@ -101,9 +104,7 @@ app._refreshSelectedThread = function(){
 		    retrieveAndFillEmailBody(latest_id, length-1, length);
 		    app.selectedThread.messages[length - 1].index = -1;
 		    for (var i = 0; i < length - 1; i = i + 1){
-		      console.log(i);
 		      app.selectedThread.messages[i].index = i;
-		      console.log("before retrieveAndFillEmailBody");
 		      retrieveAndFillEmailBody(app.selectedThread.messages[i].id, i, length);
 		    } 
   		}
@@ -143,8 +144,6 @@ app._parseLabel = function(label){
 }
 
 app._abstractEmailsFromTo = function(to){
-	console.log("_abstractEmailsFromTo");
-	console.log(to);
 	var tos_list = to.split(',')
 	for (var i = 0; i < tos_list.length; i ++){
 		tos_list[i] = tos_list[i].replace(/(.*)</g,"").replace(/>(.*)/g,"").trim();
@@ -152,8 +151,6 @@ app._abstractEmailsFromTo = function(to){
 	return tos_list;
 }
 app._abstractEmailsFromToToString = function(to){
-	console.log("_abstractEmailsFromToToString");
-	console.log(to);
 	tos_list = app._abstractEmailsFromTo(to);
 	return tos_list.join(", ");
 }
@@ -358,6 +355,19 @@ app.appUnarchiveEmail = function(event){
 	console.log("appUnarchiveEmail");
 	unarchiveEmail();
 }
+app._populateThread = function(thread){
+	console.log("_populateThread");
+	thread.from = {};
+	thread.from.name = thread.messages[0].from.name;
+	thread.from.email = thread.messages[0].from.email;
+	thread.from.initial = thread.messages[0].from.initial;
+	thread.from.initial_color = thread.messages[0].from.initial_color;
+	thread.time = thread.messages[thread.messages.length -1 ].time;
+	thread.snippet = thread.messages[thread.messages.length -1 ].snippet;
+	thread.date = thread.messages[thread.messages.length -1 ].date;
+	thread.subject = thread.messages[0].subject;
+	console.log(thread);
+}
 app.fetchMail = function(q, checkNew) {
 			app.alldone = false;
 	console.log("fetchMail");	
@@ -379,15 +389,16 @@ app.fetchMail = function(q, checkNew) {
 		req.then(function(resp) {
 			// thread.messages = processMessage(resp).reverse();
 			thread.messages = processMessage(resp);
-			thread.from = {};
-			thread.from.name = thread.messages[0].from.name;
-			thread.from.email = thread.messages[0].from.email;
-			thread.from.initial = thread.messages[0].from.initial;
-			thread.from.initial_color = thread.messages[0].from.initial_color;
-			thread.time = thread.messages[thread.messages.length -1 ].time;
-			thread.snippet = thread.messages[thread.messages.length -1 ].snippet;
-			thread.date = thread.messages[thread.messages.length -1 ].date;
-			thread.subject = thread.messages[0].subject;
+			app._populateThread(thread);
+			// thread.from = {};
+			// thread.from.name = thread.messages[0].from.name;
+			// thread.from.email = thread.messages[0].from.email;
+			// thread.from.initial = thread.messages[0].from.initial;
+			// thread.from.initial_color = thread.messages[0].from.initial_color;
+			// thread.time = thread.messages[thread.messages.length -1 ].time;
+			// thread.snippet = thread.messages[thread.messages.length -1 ].snippet;
+			// thread.date = thread.messages[thread.messages.length -1 ].date;
+			// thread.subject = thread.messages[0].subject;
 			// thread.from.name = thread.messages[0 ].from.name;
 			// thread.from.email = thread.messages[0 ].from.email;
 			// thread.from.initial = thread.messages[0 ].from.initial;
