@@ -79,6 +79,41 @@ app._parseHeading = function(heading){
 	var headings = heading.split('/');
 	return headings[headings.length - 1];
 }
+
+app._refreshSelectedThread = function(){
+	console.log("app._refreshSelectedThread");
+	console.log(app.selectedThread);
+	var request = gapi.client.gmail.users.threads.get({
+    	'userId': 'me',
+      	'id': app.selectedThread.id
+  	});
+  	request.execute(function(resp){
+  		console.log("get new thread resp:");
+  		console.log(resp);
+  		app.selectedThread = resp.result;
+  		app.selectedThread.messages = processMessage(resp);
+  		app.threads[app.selectedThreadId] = app.selectedThread;
+  		if (!resp.code){
+  			var thread = app.selectedThread;
+			var length = app.selectedThread.messages.length;
+		    var latest_id = thread.messages[length-1].id;
+		     // Fetch only the emails in the user's inbox.
+		    retrieveAndFillEmailBody(latest_id, length-1, length);
+		    app.selectedThread.messages[length - 1].index = -1;
+		    for (var i = 0; i < length - 1; i = i + 1){
+		      console.log(i);
+		      app.selectedThread.messages[i].index = i;
+		      console.log("before retrieveAndFillEmailBody");
+		      retrieveAndFillEmailBody(app.selectedThread.messages[i].id, i, length);
+		    } 
+  		}
+  	});
+
+
+	// app.selectedThread = 
+
+	
+}
 app._parseLabel = function(label){
 	var maxLength = 18;
 	if (label.length > maxLength){
@@ -108,6 +143,8 @@ app._parseLabel = function(label){
 }
 
 app._abstractEmailsFromTo = function(to){
+	console.log("_abstractEmailsFromTo");
+	console.log(to);
 	var tos_list = to.split(',')
 	for (var i = 0; i < tos_list.length; i ++){
 		tos_list[i] = tos_list[i].replace(/(.*)</g,"").replace(/>(.*)/g,"").trim();
@@ -115,6 +152,8 @@ app._abstractEmailsFromTo = function(to){
 	return tos_list;
 }
 app._abstractEmailsFromToToString = function(to){
+	console.log("_abstractEmailsFromToToString");
+	console.log(to);
 	tos_list = app._abstractEmailsFromTo(to);
 	return tos_list.join(", ");
 }
@@ -467,6 +506,7 @@ loadMoreEmails = function(){
 
 
 retrieveAndFillEmailBody = function (id, index, length){
+	console.log("retrieveAndFillEmailBody");
 	gmail.messages.get({userId: 'me', id:id, format:'full'}).then(function(resp) {
 		console.log("messages.get");
 		console.log(resp);

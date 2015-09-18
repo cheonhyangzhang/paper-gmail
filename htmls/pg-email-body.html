@@ -257,6 +257,9 @@
               pg_email_body.replyBody = "";
               pg_email_body.replyToList = app.replyAllTo;
               document.querySelector('#emailSent').show();
+              console.log("emailSent");
+              console.log(app);
+              app._refreshSelectedThread();
             }
             else{
               document.querySelector('#emailNotSent').show();

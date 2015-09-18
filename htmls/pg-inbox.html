@@ -128,8 +128,6 @@
         console.log(event);
         var index = event.model.index;
         console.log(index);
-        // console.log(detail);
-        // console.log(sender);
         app.main_page = 1;
         app.selectedThread = $.extend({},app.threads[index]);
 
@@ -138,26 +136,11 @@
         app.selectedThreadFromEmail = app.selectedThread.messages[0].from.email;
 
         app.selectedThreadId = index;
-
-        console.log("app.selectedThread");
-        console.log(app.selectedThread);
-        var length = app.selectedThread.messages.length;
+        
 
         app.selectedemail = index;
         console.log("viewEmail : ");
-        var thread = app.threads[index];
-        var latest_id = thread.messages[length-1].id;
-         // Fetch only the emails in the user's inbox.
-        console.log(thread);
-
-        retrieveAndFillEmailBody(latest_id, length-1, length);
-        app.selectedThread.messages[length - 1].index = -1;
-
-        for (var i = 0; i < length - 1; i = i + 1){
-          console.log(i);
-          app.selectedThread.messages[i].index = i;
-          retrieveAndFillEmailBody(app.selectedThread.messages[i].id, i, length);
-        } 
+        app._refreshSelectedThread();
 
 
 
