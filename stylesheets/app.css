@@ -15,9 +15,7 @@ body{
 .menu-item:hover{
 	background-color: #e7e7e7;
 }
-#side-menu{
 
-}
 
 @media (max-width: 640px) {
 	.hide-mobile{

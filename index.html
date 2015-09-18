@@ -16,7 +16,7 @@
 
   <body class="fullbleed layout vertical" >
     <template is="dom-bind" id="app">
-      <more-route-selector on-click="bodyClick">
+      <more-route-selector>
             <iron-pages selected="{{route}}" class="fullbleed fit">
               <section route="login" >
                 <pg-login></pg-login>
@@ -42,7 +42,7 @@
                         <paper-toolbar style="background-color:#00B0FF" class="toolbar-smaller">
                           <paper-icon-button onclick="toggleDrawer()" icon="menu" id="navicon" >
                           </paper-icon-button> 
-                          <div id="heading" style="width:185px;" class="hide-mobile"><p>{{heading}}</p>
+                          <div id="heading" style="width:185px;" class="hide-mobile"><p>{{_parseHeading(heading)}}</p>
                           </div>
 
                           <paper-input-container no-label-float="true" style="background-color:#81D4FA;margin-right:10px;" class="flex">
@@ -59,18 +59,32 @@
 
 
                      <paper-drawer-panel id="drawerPanel" flex>
-                          <paper-menu id="side-menu" drawer>
-                                  <paper-item class="menu-item" onclick="refreshInboxWithLabel('TODAY')"><iron-icon class="menu-icon" icon="today"></iron-icon> Today </paper-item>
-                                  <paper-item class="menu-item" onclick="refreshInboxWithLabel('INBOX')"><iron-icon class="menu-icon" icon="mail"></iron-icon> Inbox </paper-item>
-                                  <div class="separator"></div>
-                                  <paper-item class="menu-item" onclick="refreshInboxWithLabel('STARRED')"><iron-icon class="menu-icon" icon="star"></iron-icon> Starred</paper-item>
-                                  <paper-item class="menu-item" onclick="refreshInboxWithLabel('IMPORTANT')"><iron-icon class="menu-icon" icon="turned-in"></iron-icon> Important</paper-item>
-                                  <paper-item class="menu-item" onclick="refreshInboxWithLabel('DRAFTS')"><iron-icon class="menu-icon" icon="drafts"></iron-icon> Drafts</paper-item>
-                                  <paper-item class="menu-item" onclick="refreshInboxWithLabel('SENT')"><iron-icon class="menu-icon" icon="send"></iron-icon> Sent</paper-item>
-                                  <div style="position:fixed;bottom:10px;left:10px;">
-                                      A Cheonhyang App since 2015
-                                  </div>
-                          </paper-menu>
+                         <paper-header-panel class="layout vertical fit" drawer>
+                            <div class="flex">
+                              <paper-menu >
+                                      <paper-item class="menu-item" onclick="refreshInboxWithLabel('TODAY')"><iron-icon class="menu-icon" icon="today"></iron-icon> Today </paper-item>
+                                      <paper-item class="menu-item" onclick="refreshInboxWithLabel('INBOX')"><iron-icon class="menu-icon" icon="mail"></iron-icon> Inbox </paper-item>
+                                      <div class="separator"></div>
+                                      <paper-item class="menu-item" onclick="refreshInboxWithLabel('STARRED')"><iron-icon class="menu-icon" icon="star"></iron-icon> Starred</paper-item>
+                                      <paper-item class="menu-item" onclick="refreshInboxWithLabel('IMPORTANT')"><iron-icon class="menu-icon" icon="turned-in"></iron-icon> Important</paper-item>
+                                      <paper-item class="menu-item" onclick="refreshInboxWithLabel('DRAFTS')"><iron-icon class="menu-icon" icon="drafts"></iron-icon> Drafts</paper-item>
+                                      <paper-item class="menu-item" onclick="refreshInboxWithLabel('SENT')"><iron-icon class="menu-icon" icon="send"></iron-icon> Sent</paper-item>
+                                      <div class="separator"></div>
+                              </paper-menu>
+                          </div>
+                          <div class="layout vertical ">
+                             <div>
+                                <template is="dom-repeat" items="{{labels}}">
+                                    <template is="dom-if" if="{{_isUserLable(item)}}">
+                                      <div style="padding-left:17px;padding-top:10px;padding-bottom:10px;padding-right:17px;" data-name="{{item.name}}" class="menu-item" on-click="refreshInboxWithLabel">
+                                      <iron-icon class="menu-icon" icon="icons:folder"></iron-icon><span>{{_parseLabel(item.name)}}</span>
+                                      </div>
+                                    </template>
+                                </template>   
+                              </div>
+                          </div>
+                        
+                          </paper-header-panel>
                           <paper-header-panel  main class="flex fit layout vertical" mode="seamed"> 
                                 <template is="dom-if" if="{{loading}}">
                                   <div style="margin-top:20px;width:50px;margin-left:auto;margin-right:auto;">

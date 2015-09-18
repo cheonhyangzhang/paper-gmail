@@ -1,4 +1,6 @@
 DEBUG = false;
+MAX_MAILS = 5;
+
 
 function nowSearchTerm(){
 	var today_time = new Date();
@@ -29,6 +31,7 @@ function labelCompare(a,b) {
 }
 
 var app = document.querySelector('#app');
+app.load_emails_limit = MAX_MAILS;
 app.threadsEmailsToggle = {};
 app.back_content = "TODAY";
 app.labels_opened = true;
@@ -64,13 +67,44 @@ app.replyBody = "";
 
 var gmail = null;
 var PROFILE_IMAGE_SIZE = 30;
-var labels_search = {
-	// 'INBOX':'category:primary || label:important !is:chats',
-	'INBOX':'label:inbox !is:chats',
-	'STARRED':'label:starred !is:chats',
-	'IMPORTANT':'label:important !is:chats',
-	'DRAFTS':'label:drafts !is:chats',
-	'SENT':'label:sent !is:chats'
+// var labels_search = {
+// 	// 'INBOX':'category:primary || label:important !is:chats',
+// 	'INBOX':'label:inbox !is:chats',
+// 	'STARRED':'label:starred !is:chats',
+// 	'IMPORTANT':'label:important !is:chats',
+// 	'DRAFTS':'label:drafts !is:chats',
+// 	'SENT':'label:sent !is:chats'
+// }
+app._parseHeading = function(heading){
+	var headings = heading.split('/');
+	return headings[headings.length - 1];
+}
+app._parseLabel = function(label){
+	var maxLength = 18;
+	if (label.length > maxLength){
+		var labels = label.split("/");
+		var opt_label = "";
+		for (var i = 0; i < labels.length - 1; i ++){
+			if (labels[i].length > 2){
+				opt_label +="/" + labels[i].substring(0,2) + "..";
+			}
+			else{
+				opt_label +="/" + labels[i];
+			}
+		}
+		var last = labels[labels.length - 1];
+		opt_label +="/" + labels[labels.length - 1];
+		opt_label = opt_label.substring(1);
+		if (opt_label.length > maxLength){
+			return opt_label.substring(0, maxLength) + ".."
+		}
+		else{
+			return opt_label;
+		}
+	}
+	else{
+		return label; 
+	}
 }
 
 app._abstractEmailsFromTo = function(to){
@@ -94,11 +128,12 @@ app._isUserLable = function(label){
 }
 
 
-app.bodyClick = function(){
-	if (app.searching == true){
-		app.searching = false;
-	}
-}
+// app.bodyClick = function(){
+// 	console.log("bodyClick");
+// 	if (app.searching == true){
+// 		app.searching = false;
+// 	}
+// }
 app.showNewEmail = function(e){
 	console.log("showNewEmail");
 	var dialog = document.querySelector('#newEmail')
@@ -288,7 +323,7 @@ app.fetchMail = function(q, checkNew) {
 			app.alldone = false;
 	console.log("fetchMail");	
 	 // Fetch only the emails in the user's inbox.
-	gmail.threads.list({userId: 'me', q: q, 'maxResults':10, pageToken:nextPageToken}).then(function(resp) {
+	gmail.threads.list({userId: 'me', q: q, 'maxResults':app.load_emails_limit, pageToken:nextPageToken}).then(function(resp) {
 		// console.log(resp);
 		if (!resp.result.threads){
 			app.loading = false;
@@ -378,6 +413,7 @@ autoRefresh();
 //refreshInbox fields
 refreshInbox = function(checkNew) {
 	app.main_page = 0;
+	app.load_emails_limit = MAX_MAILS;
 	app.showMoreButton = false;
 	console.log("refreshInbox");
 	app.loading = true;
@@ -393,8 +429,15 @@ searchEmails = function(search){
 	app.back_content = "SEARCH";
 	refreshInbox();
 }
+
+app.refreshInboxWithLabel = function(e){
+	var label = e.model.item.name;
+	refreshInboxWithLabel(label);
+}
 refreshInboxWithLabel = function(label){
 	//close drawer if it's open	
+	console.log("refreshInboxWithLabel");
+	console.log(label);
 	drawer = document.querySelector('#drawerPanel');
 	drawer.togglePanel();
 	app.heading = label;
@@ -403,7 +446,8 @@ refreshInboxWithLabel = function(label){
 		console.log(app.list_q);
 	}
 	else{
-		app.list_q = labels_search[label];
+		// app.list_q = labels_search[label];
+		app.list_q = "label:" + label + " !is:chat";
 	}
 	app.back_content = label;
 	refreshInbox();
@@ -417,6 +461,7 @@ loadMoreEmails = function(){
 		app.bottomLoading = true;
 	  	var q = app.list_q;
 	  	app.fetchMail(q);
+		app.load_emails_limit = app.load_emails_limit*2;
 	}
 }
 
