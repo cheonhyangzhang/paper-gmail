@@ -535,26 +535,43 @@ retrieveAndFillEmailBody = function (id, index, length){
 	   		console.log("payload :");
 	   		console.log(payload);
 	   		if (payload.body.size != 0){
-		    	body_str = Base64.decode(payload.body.data);
-		    	body_holder = document.getElementById('body_holder-' + index);
-		    	body_str.replace(/<a href="/g, '<a target="_blank" href="');
-				body_holder.innerHTML = body_str;
-				console.log("Compare");
-				console.log(index);
-				console.log(length);
-		    	if (index == length - 1){
-					body_holder.style.display = "block";		    			
-					// body_holder.style.cursor = "none";
+	   			if (payload.mimeType == "text/plain" || payload.mimeType == "text/html"){
+			    	body_str = Base64.decode(payload.body.data);
+			    	body_holder = document.getElementById('body_holder-' + index);
+			    	body_str.replace(/<a href="/g, '<a target="_blank" href="');
+					body_holder.innerHTML = body_str;
+					console.log("Compare");
+					console.log(index);
+					console.log(length);
+			    	if (index == length - 1){
+						body_holder.style.display = "block";		    			
+						// body_holder.style.cursor = "none";
+			    	}
+			    	else{
+			    		var body_id = app.selectedThread.id + '-body_holder-' + index;
+			    		if (body_id in app.threadsEmailsToggle){
+			    			body_holder.style.display = app.threadsEmailsToggle[body_id];
+			    		}
+			    		else{
+			    			body_holder.style.display = "none"; 
+			    		}
+			    	}
 		    	}
+		    	// else if (payload.mimeType == "application/octet-stream"){
 		    	else{
-		    		var body_id = app.selectedThread.id + '-body_holder-' + index;
-		    		if (body_id in app.threadsEmailsToggle){
-		    			body_holder.style.display = app.threadsEmailsToggle[body_id];
-		    		}
-		    		else{
-		    			body_holder.style.display = "none"; 
-		    		}
+		    		if (typeof(app.selectedThread.messages[index].attachments) == "undefined"){
+		    			app.selectedThread.messages[index].attachments = []	
+		    		} 
+		    		app.selectedThread.messages[index].attachments.push({'messageId':id,'filename':payload.filename, 'mimeType':payload.mimeType, 'attachmentId':payload.body.attachmentId})
+		    		app.selectedThread.messages[index] = $.extend({},app.selectedThread.messages[index]);
+		    		app.selectedThread.messages = app.selectedThread.messages.slice();
+		    		app.selectedThread = $.extend({},app.selectedThread);
+		    		console.log("app.selectedThread.messages");
+		    		console.log(app.selectedThread.messages);
 		    	}
+		    	// else{
+		    		// alert("Unsupported mimeType " + payload.mimeType);
+		    	// }
 		    }
 		    else{
 			    if (payload.mimeType == "multipart/alternative"){
@@ -589,6 +606,7 @@ retrieveAndFillEmailBody = function (id, index, length){
 			    	// body_str = atob(payload.parts[1].body.data);
 			    }
 			    else{
+			    	console.log("else");
 			    	if (payload.mimeType == "multipart/mixed"){
 			    		payloads = payloads.concat(payload.parts);
 			    	}
@@ -598,9 +616,12 @@ retrieveAndFillEmailBody = function (id, index, length){
 			    	else if (payload.mimeType == "image/png"){
 			    	}
 			    	else{
+			    		console.log("else");
 			    		alert("has not supported item " + payload.mimeType);
 			    	}
+
 			    }
+
 			}
 	   	}//while  
 	});

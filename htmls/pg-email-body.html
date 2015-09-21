@@ -80,12 +80,21 @@
                   <!-- content -->
                 </div>
                 
+                <template is="dom-if" if="{{item.attachments}}">
+                  <div class="separator"></div>
+                  <div style="padding-left:30px;padding-right:30px;padding-bottom:10px;">
+                    <template is="dom-repeat" items="{{item.attachments}}">
+                      <span style="margin-right:20px;">{{item.filename}}</span>
+                    </template>
+                  </div>
+                </template>
 
           </template>
           </div>
           <!-- <div class="card-actions"> -->
             <!-- <paper-button>Some action</paper-button> -->
           <!-- </div> -->
+          
         </paper-card>
         <paper-card style="margin-bottom:15px;" class="layout horizontal flex">
           <div class="card-content layout horizontal flex">
