@@ -208,7 +208,7 @@
           app.replyToList = [app.replyTo];
       },
       replyAllToEmail:function(){
-        app.replyToList = app.replyAllTo;
+        app.replyToList = app.replyAllTo.slice();
       },
       toggleEmailBody:function(e){
         var index = e.model.item.index;

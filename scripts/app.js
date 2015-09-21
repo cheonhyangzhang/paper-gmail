@@ -648,20 +648,22 @@ app.populateReplyTo = function(thread){
 			index = i;
 		}
 	}
-	console.log("Before removal");
-
-	console.log(tos_list);
 	if (index != -1){
 		tos_list.splice(index,1);
 	}
-	console.log("After removal");
-	console.log(tos_list);
-	console.log(app.replyTo);
-	// if (app.replyTo)
+	
 	tos_list.push(app.replyTo);
-	console.log(tos_list);
-	app.replyAllTo = tos_list;
-	app.replyToList = app.replyAllTo;
+	var dict = {};
+	var new_tos_list = [];
+	for (var i = 0; i < tos_list.length; i ++){
+		if (!(tos_list[i] in dict)){
+			new_tos_list.push(tos_list[i]);
+			dict[tos_list[i]] = 'true';
+		}
+	}
+
+	app.replyAllTo = new_tos_list.slice();
+	app.replyToList = app.replyAllTo.slice();
 
 }
 ,
