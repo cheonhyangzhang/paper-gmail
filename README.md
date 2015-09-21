@@ -28,6 +28,10 @@ A material design version of gmail web app using [Polymer](https://www.polymer-p
 
 ## Demo
 The stable version is hosted in [Google's App Engine](https://gmail-polymer.appspot.com/).
+Want to try this but don't want to Sign In with your personal Gmail?
+Use this test account I created for you.
+polymer.paper.mail@gmail.com
+Password: justforfun
 
 Sometimes it keeps refreshing for the first time. In this case, copy the url and paste it in a new tab will work.
 The first time you access the app, you will need to sign in with your Google account. Actually, this is just to gain authorization from you to get emails and write emails as behalf of you.
