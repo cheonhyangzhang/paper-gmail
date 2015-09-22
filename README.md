@@ -26,6 +26,9 @@ A material design version of gmail web app using [Polymer](https://www.polymer-p
 * Some email's body doesn't show up correctly.
 * Email attachments do not show up yet.
 
+## Browsers
+It should work on Chrome, FireFox and Safari, haven't tested on IE.
+
 ## Demo
 The stable version is hosted in [Google's App Engine](https://gmail-polymer.appspot.com/).
 Want to try this but don't want to Sign In with your personal Gmail?
