@@ -52,7 +52,7 @@ body{
 }
 
 
-.email-thread-card .header{
+paper-card .header{
 	display:none;
 }
 
