@@ -27,7 +27,7 @@
        
         <template is="dom-repeat" items="{{threads}}">
             <!-- <div class="thread-card layout horizontal" > -->
-            <paper-card style="margin-bottom:1px;" class="layout horizontal flex">
+            <paper-card style="margin-bottom:1px;" class="email-thread-card layout horizontal flex">
              <div class="card-content layout horizontal flex">
               <div class="layout vertical">
                 <template is="dom-if" if="{{_hasProfileImage(users, item.from.name)}}"> 
@@ -39,15 +39,10 @@
                   </div>
                 </template>
               </div>
-              <!-- <div onclick="viewEmail()"  class="layout vertical flex" style="cursor:pointer;" > -->
               <div on-tap="viewEmail"  class="layout vertical flex" style="cursor:pointer;" >
-                <!-- onclick="viewEmail({{index}})" -->
                 <div style="display:none;">{{index}}</div>
                 <div  class="layout horizontal">
                   <span class="thread-name">{{item.from.name}}</span>
-
-                  <!-- <span class="flex">{{_threadMessages(item.messages.length)}}</span> -->
-
                   <template is="dom-if" if="{{_shouldShowMessagesLength(item.messages.length)}}">
                   <span class="thread-length" >(<span>{{item.messages.length}}</span>)</span>
                   </template>
