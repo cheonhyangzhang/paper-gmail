@@ -62,11 +62,11 @@ search email
 ![search](https://raw.githubusercontent.com/cheonhyangzhang/paper-gmail/master/demo/search.png)
 
 ## Credits
-This project was originally inspired by [this project](https://github.com/ebidel/polymer-gmail).
+This project was originally inspired by [Eric Bidelman's polymer gmail project](https://github.com/ebidel/polymer-gmail).
 
 
 ## Resources 
 * [Gmail REST API](https://developers.google.com/gmail/api/)
-* [Polymer](https://www.polymer-project.org/1.0//)
+* [Polymer](https://www.polymer-project.org/1.0/)
 * [Google's Material Design Colors](http://www.google.com/design/spec/style/color.html)
 

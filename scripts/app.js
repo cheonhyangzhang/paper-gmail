@@ -369,11 +369,11 @@ app._populateThread = function(thread){
 	console.log(thread);
 }
 app.fetchMail = function(q, checkNew) {
-			app.alldone = false;
+	app.alldone = false;
 	console.log("fetchMail");	
 	 // Fetch only the emails in the user's inbox.
 	gmail.threads.list({userId: 'me', q: q, 'maxResults':app.load_emails_limit, pageToken:nextPageToken}).then(function(resp) {
-		// console.log(resp);
+		console.log(resp);
 		if (!resp.result.threads){
 			app.loading = false;
 			app.alldone = true;
@@ -385,28 +385,11 @@ app.fetchMail = function(q, checkNew) {
     emailsToLoad = threads.length;
     threads.forEach(function(thread, i) {
 		var req = gmail.threads.get({userId: 'me', 'id': thread.id});
+		console.log(req);
 		batch.add(req);
-		req.then(function(resp) {
-			// thread.messages = processMessage(resp).reverse();
+		req.then(function(resp){
 			thread.messages = processMessage(resp);
 			app._populateThread(thread);
-			// thread.from = {};
-			// thread.from.name = thread.messages[0].from.name;
-			// thread.from.email = thread.messages[0].from.email;
-			// thread.from.initial = thread.messages[0].from.initial;
-			// thread.from.initial_color = thread.messages[0].from.initial_color;
-			// thread.time = thread.messages[thread.messages.length -1 ].time;
-			// thread.snippet = thread.messages[thread.messages.length -1 ].snippet;
-			// thread.date = thread.messages[thread.messages.length -1 ].date;
-			// thread.subject = thread.messages[0].subject;
-			// thread.from.name = thread.messages[0 ].from.name;
-			// thread.from.email = thread.messages[0 ].from.email;
-			// thread.from.initial = thread.messages[0 ].from.initial;
-			// thread.from.initial_color = thread.messages[0 ].from.initial_color;
-			// thread.time = thread.messages[0 ].time;
-			// thread.snippet = thread.messages[0 ].snippet;
-			// thread.date = thread.messages[0 ].date;
-			// thread.subject = thread.messages[0 ].subject;
 			loadThreads(threads, checkNew);
 		});
     });
