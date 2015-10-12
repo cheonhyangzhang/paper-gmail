@@ -116,7 +116,7 @@ app._refreshSelectedThread = function(){
 	
 }
 app._parseLabel = function(label){
-	var maxLength = 18;
+	var maxLength = 16;
 	if (label.length > maxLength){
 		var labels = label.split("/");
 		var opt_label = "";
